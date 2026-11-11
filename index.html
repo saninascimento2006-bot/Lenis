@@ -151,6 +151,16 @@
         <div class="hero-layer hero-vignette"></div>
       </div>
 
+      <!-- Floating 3D relic, rendered as a full-hero background layer -->
+      <div class="hero-model-bg" id="hero-model-bg" aria-hidden="true">
+        <div class="canvas-3d-wrapper" id="canvas-3d-wrapper">
+          <canvas id="three-canvas"></canvas>
+          <div class="canvas-3d-loader" id="canvas-3d-loader">
+            <div class="loader-spinner"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="section-container hero-container-grid">
         <!-- Left: Narrative Text Column -->
         <div class="hero-content-col">
@@ -189,51 +199,6 @@
           </div>
         </div>
 
-        <!-- Right: 3D Model Stage (Lando Norris style) -->
-        <div class="hero-3d-col">
-          <div class="hero-3d-stage" id="hero-3d-stage">
-            <div class="stage-header">
-              <span class="stage-badge">RELÍQUIA PROIBIDA &bull; 3D</span>
-              <span class="drag-hint" id="drag-hint">✦ Arraste para girar em 360°</span>
-            </div>
-
-            <!-- WebGL Canvas for Three.js -->
-            <div class="canvas-3d-wrapper" id="canvas-3d-wrapper">
-              <canvas id="three-canvas"></canvas>
-              <div class="canvas-3d-loader" id="canvas-3d-loader">
-                <div class="loader-spinner"></div>
-                <span>Invocando a relíquia ancestral...</span>
-              </div>
-            </div>
-
-            <!-- Interactive Material & Control Bar -->
-            <div class="stage-controls">
-              <div class="mat-selector" role="group" aria-label="Acabamento da Relíquia">
-                <button class="mat-btn active" data-mat="gold" title="Ouro do Olimpo">
-                  <span class="mat-dot mat-gold"></span> Ouro
-                </button>
-                <button class="mat-btn" data-mat="bronze" title="Bronze Arcaico">
-                  <span class="mat-dot mat-bronze"></span> Bronze
-                </button>
-                <button class="mat-btn" data-mat="obsidian" title="Obsidiana Vulcânica">
-                  <span class="mat-dot mat-obsidian"></span> Obsidiana
-                </button>
-                <button class="mat-btn" data-mat="ichor" title="Icor Escarlate">
-                  <span class="mat-dot mat-ichor"></span> Icor
-                </button>
-              </div>
-
-              <div class="stage-action-btns">
-                <button id="toggle-autorotate-btn" class="stage-icon-btn active" title="Alternar rotação contínua">
-                  <span class="icon-glyph">⟳</span>
-                </button>
-                <button id="reset-3d-btn" class="stage-icon-btn" title="Resetar ângulo">
-                  <span class="icon-glyph">⌖</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Scroll Indicator Cue -->

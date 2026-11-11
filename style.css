@@ -212,6 +212,7 @@ button {
 }
 
 .header-container {
+  width: 100%;
   max-width: var(--max-width);
   height: 100%;
   margin: 0 auto;
@@ -221,11 +222,28 @@ button {
   justify-content: space-between;
 }
 
+/* On large screens the header uses the full horizontal width */
+@media (min-width: 1400px) {
+  .header-container {
+    max-width: none;
+    padding: 0 clamp(2rem, 2.5vw, 4rem);
+    gap: clamp(1.5rem, 3vw, 4rem);
+  }
+}
+
+/* Keep the utilities compact until there is room for their text labels */
+@media (max-width: 1599px) {
+  .audio-label, .motion-label {
+    display: none;
+  }
+}
+
 .brand-logo {
   display: flex;
   align-items: center;
   gap: 0.8rem;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .logo-glyph {
@@ -265,6 +283,7 @@ button {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  flex-wrap: nowrap;
 }
 
 .nav-link {
@@ -287,6 +306,7 @@ button {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .util-btn {
@@ -618,14 +638,26 @@ button {
    08. CHAPTER 1: HERO & PRÓLOGO (3D Showcase Style Lando Norris)
    -------------------------------------------------------------------------- */
 .hero-section {
+  /* Fill the viewport (vh fallback for older browsers, svh for mobile UI) */
   min-height: 100vh;
-  padding-top: calc(var(--header-height) + 3rem);
-  padding-bottom: 5rem;
+  min-height: 100svh;
+  padding-top: calc(var(--header-height) + clamp(0.75rem, 2.5vh, 2.5rem));
+  padding-bottom: clamp(3.25rem, 7vh, 5rem);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+/* On wide screens the hero locks to the viewport height and its content scales */
+@media (min-width: 1201px) and (min-height: 560px) {
+  .hero-section {
+    height: 100vh;
+    height: 100svh;
+    min-height: 100vh;
+    min-height: 100svh;
+  }
 }
 
 .hero-bg-container {
@@ -658,36 +690,41 @@ button {
 
 .hero-container-grid {
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 3.5rem;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: clamp(2rem, 3.5vw, 3.5rem);
   align-items: center;
   position: relative;
   z-index: 5;
   width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .hero-content-col {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 1150px;
 }
 
 .kicker-left {
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .hero-title {
-  margin: 1.2rem 0 1.5rem 0;
+  margin: clamp(0.6rem, 1.8vh, 1.2rem) 0 clamp(0.9rem, 2.2vh, 1.5rem) 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
+  align-items: center;
+  text-align: center;
 }
 
 .hero-title-sub {
   font-family: var(--font-sans);
-  font-size: 0.82rem;
+  font-size: clamp(0.85rem, min(1.1vw, 1.8vh), 1.2rem);
   letter-spacing: 0.35em;
   color: var(--gold-aged);
   margin-bottom: 0.6rem;
@@ -696,22 +733,25 @@ button {
 
 .hero-title-main {
   font-family: var(--font-display);
-  font-size: clamp(3.2rem, 7vw, 5.8rem);
+  font-size: clamp(3rem, min(9vw, 17vh), 10rem);
   font-weight: 900;
   color: var(--marble-light);
   letter-spacing: 0.15em;
-  line-height: 1;
+  line-height: 1.12;
+  /* Extra room so the clipped gradient never cuts the glyph edges */
+  padding: 0.08em 0.05em 0.06em;
   text-shadow: 
     0 0 30px var(--gold-glow),
     0 10px 40px rgba(0, 0, 0, 0.9);
   background: linear-gradient(180deg, #ffffff 10%, #d8d5cd 50%, #c5a059 90%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .hero-title-tag {
   font-family: var(--font-serif);
-  font-size: clamp(0.85rem, 1.6vw, 1.15rem);
+  font-size: clamp(1rem, min(1.6vw, 2.4vh), 1.45rem);
   letter-spacing: 0.22em;
   color: var(--marble-muted);
   margin-top: 0.8rem;
@@ -719,9 +759,9 @@ button {
 
 .hero-quote-box {
   position: relative;
-  margin: 1.2rem 0 1.8rem 0;
+  margin: clamp(0.6rem, 1.8vh, 1.2rem) auto clamp(0.9rem, 2.4vh, 1.8rem) auto;
   width: 100%;
-  padding: 1.2rem 0;
+  padding: clamp(0.6rem, 1.6vh, 1.2rem) 0;
 }
 
 .quote-border-top, .quote-border-bottom {
@@ -731,17 +771,17 @@ button {
 }
 
 .quote-border-top {
-  margin-bottom: 1rem;
+  margin-bottom: clamp(0.5rem, 1.4vh, 1rem);
 }
 
 .quote-border-bottom {
-  margin-top: 1rem;
+  margin-top: clamp(0.5rem, 1.4vh, 1rem);
 }
 
 .hero-quote {
   font-family: var(--font-body);
   font-style: italic;
-  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  font-size: clamp(1.3rem, min(2.2vw, 3.8vh), 2.4rem);
   color: var(--gold-bright);
   line-height: 1.4;
   margin: 0;
@@ -749,92 +789,47 @@ button {
 }
 
 .hero-lead {
-  font-size: 1.2rem;
+  font-size: clamp(1.1rem, min(1.35vw, 2.6vh), 1.35rem);
   color: var(--marble-mid);
   line-height: 1.65;
-  margin-bottom: 2.2rem;
+  margin-bottom: clamp(1.2rem, 3vh, 2.2rem);
 }
 
 .hero-actions {
   display: flex;
-  gap: 1.2rem;
+  gap: clamp(0.7rem, 1.2vw, 1.2rem);
   flex-wrap: wrap;
-  justify-content: flex-start;
-  margin-bottom: 1.5rem;
+  justify-content: center;
+  margin-bottom: 0;
 }
 
 /* ==========================================================================
-   LANDO NORRIS STYLE 3D STAGE
+   FLOATING 3D RELIC — FULL HERO BACKGROUND
    ========================================================================== */
-.hero-3d-col {
+.hero-model-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  position: relative;
-}
-
-.hero-3d-stage {
-  background: rgba(14, 17, 23, 0.78);
-  border: 1px solid rgba(223, 183, 108, 0.3);
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: 
-    0 25px 60px rgba(0, 0, 0, 0.85),
-    0 0 35px rgba(223, 183, 108, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  width: 100%;
-  max-width: 520px;
-  position: relative;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.stage-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.4rem;
-  border-bottom: 1px solid rgba(200, 196, 188, 0.1);
-  background: rgba(7, 8, 10, 0.4);
-}
-
-.stage-badge {
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold-bright);
-  font-weight: 700;
-}
-
-.drag-hint {
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  color: var(--marble-muted);
-  letter-spacing: 0.08em;
-  animation: pulseHint 3s infinite ease-in-out;
-}
-
-@keyframes pulseHint {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; color: var(--gold-aged); }
+  opacity: 0.7;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 36%, transparent 82%);
+  mask-image: radial-gradient(ellipse at 50% 50%, #000 36%, transparent 82%);
 }
 
 .canvas-3d-wrapper {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: 420px;
-  cursor: grab;
+  height: 100%;
   user-select: none;
-  touch-action: none;
-  background: radial-gradient(circle at 50% 60%, rgba(197, 160, 89, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 55%, rgba(197, 160, 89, 0.07) 0%, transparent 70%);
 }
 
-.canvas-3d-wrapper.grabbing {
-  cursor: grabbing;
-}
+
 
 #three-canvas {
   width: 100%;
@@ -844,16 +839,11 @@ button {
 
 .canvas-3d-loader {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(10, 12, 16, 0.9);
+  inset: 0;
+  background: transparent;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
   z-index: 10;
   transition: opacity 0.5s ease, visibility 0.5s ease;
 }
@@ -875,101 +865,6 @@ button {
 
 @keyframes spinLoader {
   to { transform: rotate(360deg); }
-}
-
-.canvas-3d-loader span {
-  font-family: var(--font-serif);
-  font-size: 0.85rem;
-  letter-spacing: 0.15em;
-  color: var(--gold-aged);
-}
-
-.stage-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.9rem 1.2rem;
-  border-top: 1px solid rgba(200, 196, 188, 0.1);
-  background: rgba(7, 8, 10, 0.5);
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.mat-selector {
-  display: flex;
-  gap: 0.45rem;
-}
-
-.mat-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.38rem 0.75rem;
-  font-family: var(--font-sans);
-  font-size: 0.74rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(200, 196, 188, 0.15);
-  color: var(--marble-mid);
-  transition: all var(--transition-fast);
-}
-
-.mat-btn:hover {
-  background: rgba(197, 160, 89, 0.12);
-  color: var(--gold-bright);
-  border-color: var(--gold-aged);
-}
-
-.mat-btn.active {
-  background: rgba(197, 160, 89, 0.22);
-  border-color: var(--gold-bright);
-  color: var(--gold-bright);
-  box-shadow: 0 0 10px rgba(197, 160, 89, 0.3);
-}
-
-.mat-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.mat-gold { background: linear-gradient(135deg, #dfb76c, #9e7f3c); }
-.mat-bronze { background: linear-gradient(135deg, #a7743d, #5a3c1c); }
-.mat-obsidian { background: linear-gradient(135deg, #3a3a44, #121216); border: 1px solid #555; }
-.mat-ichor { background: linear-gradient(135deg, #b72138, #5a0e1a); }
-
-.stage-action-btns {
-  display: flex;
-  gap: 0.4rem;
-}
-
-.stage-icon-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(200, 196, 188, 0.15);
-  color: var(--marble-mid);
-  font-size: 1rem;
-  transition: all var(--transition-fast);
-}
-
-.stage-icon-btn:hover {
-  background: rgba(197, 160, 89, 0.15);
-  border-color: var(--gold-bright);
-  color: var(--gold-bright);
-}
-
-.stage-icon-btn.active {
-  border-color: var(--gold-bright);
-  color: var(--gold-bright);
-  background: rgba(197, 160, 89, 0.2);
 }
 
 /* Call to Actions */
@@ -1024,6 +919,10 @@ button {
 
 /* Scroll Cue Chevron */
 .scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(0.75rem, 2.2vh, 2rem);
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1031,6 +930,7 @@ button {
   cursor: pointer;
   opacity: 0.75;
   transition: opacity var(--transition-fast);
+  z-index: 6;
 }
 
 .scroll-cue:hover {
@@ -1394,7 +1294,7 @@ button {
 
 .epithet-cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 1.6rem;
 }
 
@@ -2373,14 +2273,35 @@ button {
 /* --------------------------------------------------------------------------
    16. RESPONSIVE MEDIA QUERIES
    -------------------------------------------------------------------------- */
-@media (max-width: 1080px) {
+@media (max-width: 1200px) {
   .side-tracker {
-    display: none; /* Hide vertical tracker on medium/small tablets */
+    display: none; /* Hide vertical tracker on tablets and medium screens */
+  }
+
+  .desktop-nav {
+    display: none; /* Switch to hamburger menu earlier to avoid header clutter */
+  }
+
+  .mobile-toggle {
+    display: flex; /* Show menu toggle */
+  }
+
+  .audio-label, .motion-label {
+    display: none; /* Show icon-only buttons on tablets/small laptops to keep header clean */
+  }
+
+  .header-container {
+    padding: 0 1.25rem;
   }
 
   .hero-container-grid {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.5rem;
+  }
+
+  .hero-section {
+    padding-top: calc(var(--header-height) + clamp(1rem, 3vh, 2rem));
+    padding-bottom: clamp(4rem, 8vh, 5rem);
   }
 
   .hero-content-col {
@@ -2405,8 +2326,11 @@ button {
     justify-content: center;
   }
 
-  .canvas-3d-wrapper {
-    height: 360px;
+  .hero-model-bg {
+    width: 100%;
+    opacity: 0.5;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 30%, transparent 82%);
+    mask-image: radial-gradient(ellipse at 50% 50%, #000 30%, transparent 82%);
   }
 
   .deity-showcase {
@@ -2414,11 +2338,12 @@ button {
   }
 
   .dossier-grid, .threats-triptych, .epithet-infographic, .specs-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .society-split, .forest-story-grid {
     grid-template-columns: 1fr;
+    gap: 2.5rem;
   }
 }
 
@@ -2436,7 +2361,16 @@ button {
   }
 
   .story-section {
-    padding: 5rem 1.2rem;
+    padding: 5rem 1.25rem;
+  }
+
+  .section-header {
+    margin-bottom: 2.8rem;
+  }
+
+  .hero-section {
+    padding-top: calc(var(--header-height) + 2rem);
+    padding-bottom: clamp(3.5rem, 8vh, 4.5rem);
   }
 
   .hero-quote-box {
@@ -2455,7 +2389,7 @@ button {
 
   .narrative-banner {
     flex-direction: column;
-    padding: 1.8rem;
+    padding: 1.8rem 1.4rem;
     gap: 1rem;
   }
 
@@ -2463,16 +2397,332 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .deity-card-frame {
-    padding: 2rem 1.5rem;
+  .pantheon-filters {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding-bottom: 0.6rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
 
-  .manifesto-box, .oracle-frame {
+  .pantheon-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-tab {
+    flex-shrink: 0;
+  }
+
+  .deity-card-frame {
     padding: 2.2rem 1.5rem;
   }
 
+  .dossier-grid, .threats-triptych, .epithet-infographic, .specs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .epithet-matrix-wrapper {
+    padding: 2rem 1.4rem;
+  }
+
+  .manifesto-box, .oracle-frame {
+    padding: 2.5rem 1.5rem;
+  }
+
   .result-parchment {
-    padding: 2rem 1.2rem;
+    padding: 2.2rem 1.4rem;
+  }
+
+  .project-specs-card {
+    padding: 2rem 1.4rem;
+  }
+
+  .specs-grid {
+    gap: 1.8rem;
+  }
+}
+
+@media (max-width: 580px) {
+  .header-container {
+    padding: 0 1rem;
+  }
+
+  .audio-label, .motion-label {
+    display: none; /* Icon-only utility buttons on compact screens */
+  }
+
+  .util-btn {
+    padding: 0.45rem 0.65rem;
+  }
+
+  .header-actions {
+    gap: 0.45rem;
+  }
+
+  .brand-logo .logo-title {
+    font-size: 1.15rem;
+    letter-spacing: 0.12em;
+  }
+
+  .brand-logo .logo-sub {
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+  }
+
+  .brand-logo .logo-glyph {
+    font-size: 1.5rem;
+  }
+
+  .story-section {
+    padding: 4rem 1rem;
+  }
+
+  .hero-section {
+    padding-top: calc(var(--header-height) + 1.2rem);
+    padding-bottom: clamp(3.25rem, 7vh, 3.75rem);
+  }
+
+  .hero-title-main {
+    font-size: clamp(2.3rem, 11vw, 3.8rem);
+    letter-spacing: 0.08em;
+  }
+
+  .hero-title-tag {
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+  }
+
+  .hero-quote {
+    font-size: 1.15rem;
+  }
+
+  .hero-lead {
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  .hero-model-bg {
+    opacity: 0.38;
+  }
+
+  .section-title {
+    font-size: clamp(1.7rem, 6vw, 2.3rem);
+  }
+
+  .section-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .narrative-banner {
+    padding: 1.4rem 1.1rem;
+  }
+
+  .banner-icon {
+    font-size: 2rem;
+  }
+
+  .deity-name {
+    font-size: clamp(1.9rem, 7vw, 2.5rem);
+  }
+
+  .deity-greek {
+    font-size: 1.25rem;
+    letter-spacing: 0.15em;
+  }
+
+  .deity-card-frame {
+    padding: 1.8rem 1.1rem;
+  }
+
+  .deity-desc {
+    font-size: 1.05rem;
+  }
+
+  .deity-metrics {
+    padding: 1.1rem;
+  }
+
+  .epithet-matrix-wrapper {
+    padding: 1.4rem 0.9rem;
+  }
+
+  .matrix-heading h3 {
+    font-size: 1.7rem;
+  }
+
+  .matrix-nav-buttons {
+    gap: 0.45rem;
+  }
+
+  .matrix-btn {
+    flex: 1 1 calc(50% - 0.45rem);
+    text-align: center;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.82rem;
+  }
+
+  .matrix-card {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .dossier-card {
+    padding: 1.6rem 1.2rem;
+  }
+
+  .conflict-pillar {
+    flex-direction: column;
+    padding: 1.4rem 1.1rem;
+    gap: 0.9rem;
+  }
+
+  .pillar-icon {
+    font-size: 1.8rem;
+  }
+
+  .parchment-frame {
+    padding: 1.5rem 1rem;
+  }
+
+  .parchment-footer {
+    flex-direction: column;
+    gap: 0.4rem;
+    text-align: center;
+  }
+
+  .haven-card {
+    flex-direction: column;
+    padding: 1.3rem 1.1rem;
+    gap: 0.9rem;
+  }
+
+  .haven-icon {
+    font-size: 1.8rem;
+  }
+
+  .threat-card {
+    padding: 1.6rem 1.2rem;
+  }
+
+  .manifesto-box {
+    padding: 1.8rem 1rem;
+  }
+
+  .manifesto-seal {
+    font-size: 2.8rem;
+  }
+
+  .manifesto-title {
+    font-size: 1.7rem;
+  }
+
+  .manifesto-body {
+    font-size: 1.1rem;
+  }
+
+  .manifesto-climax-quote {
+    font-size: 1.2rem;
+    padding: 1.2rem 0.6rem;
+  }
+
+  .oracle-frame {
+    padding: 1.6rem 1rem;
+  }
+
+  .oracle-header h3 {
+    font-size: 1.7rem;
+  }
+
+  .step-question {
+    font-size: 1.2rem;
+  }
+
+  .opt-box {
+    padding: 1rem 1.1rem;
+    font-size: 0.98rem;
+  }
+
+  .step-nav-buttons {
+    flex-direction: column-reverse;
+    gap: 0.7rem;
+  }
+
+  .oracle-next-btn, .oracle-back-btn, .oracle-submit-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    margin-left: 0;
+    padding: 0.85rem 1rem;
+  }
+
+  .result-parchment {
+    padding: 1.8rem 1rem;
+  }
+
+  .result-epithet-title {
+    font-size: 2.1rem;
+  }
+
+  .result-stat-row {
+    flex-direction: column;
+    gap: 0.2rem;
+    text-align: left;
+  }
+
+  .stat-val {
+    text-align: left;
+  }
+
+  .result-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .project-specs-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .site-footer {
+    padding: 3rem 1rem 2rem;
+  }
+
+  .footer-logo {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .hero-title-main {
+    font-size: 2.1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-model-bg {
+    opacity: 0.32;
+  }
+
+  .brand-logo .logo-title {
+    font-size: 1rem;
+  }
+
+  .brand-logo .logo-glyph {
+    font-size: 1.3rem;
+  }
+
+  .cta-primary, .cta-secondary {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Touch Device Polish */
+@media (hover: none) and (pointer: coarse) {
+  .cursor-glow {
+    display: none !important; /* Hide mouse glow on touch-only devices */
+  }
+
+  .nav-link, .util-btn, .matrix-btn, .filter-tab, .oracle-next-btn, .oracle-back-btn, .oracle-submit-btn {
+    min-height: 44px; /* Ensure optimal tap targets for mobile touch */
   }
 }
 

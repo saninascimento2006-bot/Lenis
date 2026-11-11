@@ -181,14 +181,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileDrawer = document.getElementById('mobile-drawer');
 
   if (mobileMenuBtn && mobileDrawer) {
-    mobileMenuBtn.addEventListener('click', () => {
+    const closeDrawer = () => {
+      mobileDrawer.classList.remove('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    };
+
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isOpen = mobileDrawer.classList.toggle('open');
       mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
     });
 
-    drawerCloseBtn?.addEventListener('click', () => {
-      mobileDrawer.classList.remove('open');
-      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    drawerCloseBtn?.addEventListener('click', closeDrawer);
+
+    document.addEventListener('click', (e) => {
+      if (mobileDrawer.classList.contains('open') && !mobileDrawer.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        closeDrawer();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileDrawer.classList.contains('open')) {
+        closeDrawer();
+      }
     });
   }
 
@@ -1016,40 +1031,29 @@ document.addEventListener('DOMContentLoaded', () => {
       0.1,
       100
     );
-    camera.position.set(0, 0.35, 3.2);
+
+    const CAMERA_BASE_Z = 4.2;
+    camera.position.set(0, 0.35, CAMERA_BASE_Z);
+
+    // Keep the whole relic visible on narrow / portrait backgrounds
+    function fitCameraToContainer() {
+      const w = container.clientWidth || 1;
+      const h = container.clientHeight || 1;
+      const aspect = w / h;
+      const fovRad = (camera.fov * Math.PI) / 180;
+      const fitForWidth = 2.35 / (2 * Math.tan(fovRad / 2) * Math.max(aspect, 0.3));
+
+      camera.aspect = aspect;
+      camera.position.z = Math.max(CAMERA_BASE_Z, fitForWidth);
+      camera.updateProjectionMatrix();
+    }
+    fitCameraToContainer();
 
     // Hierarchical Groups for Smooth Multi-Axis Transform
     const masterGroup = new THREE.Group();
     const modelPivot = new THREE.Group();
     masterGroup.add(modelPivot);
     scene.add(masterGroup);
-
-    // Glowing Mystical Pedestal Ring (Ancient Greek Torus)
-    const ringGeo = new THREE.TorusGeometry(1.22, 0.016, 16, 64);
-    const ringMat = new THREE.MeshStandardMaterial({
-      color: 0xdfb76c,
-      emissive: 0x9e7f3c,
-      emissiveIntensity: 0.65,
-      roughness: 0.28,
-      metalness: 0.85,
-    });
-    const pedestalRing = new THREE.Mesh(ringGeo, ringMat);
-    pedestalRing.rotation.x = Math.PI / 2;
-    pedestalRing.position.y = -0.92;
-    masterGroup.add(pedestalRing);
-
-    // Subtle Radial Glow Disc underneath
-    const discGeo = new THREE.CircleGeometry(1.22, 32);
-    const discMat = new THREE.MeshBasicMaterial({
-      color: 0xdfb76c,
-      transparent: true,
-      opacity: 0.06,
-      side: THREE.DoubleSide,
-    });
-    const glowDisc = new THREE.Mesh(discGeo, discMat);
-    glowDisc.rotation.x = -Math.PI / 2;
-    glowDisc.position.y = -0.92;
-    masterGroup.add(glowDisc);
 
     // Multi-Point Studio Lighting (Lando Norris style)
     const ambientLight = new THREE.AmbientLight(0x1a1e28, 1.4);
@@ -1094,28 +1098,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }),
     };
 
-    let activeMaterialKey = 'gold';
-    let loadedMesh = null;
-
-    function applyMaterial(matKey) {
-      if (!loadedMesh || !materials[matKey]) return;
-      activeMaterialKey = matKey;
-      loadedMesh.material = materials[matKey];
-
-      // Update button active state
-      document.querySelectorAll('.mat-btn').forEach((btn) => {
-        btn.classList.toggle('active', btn.getAttribute('data-mat') === matKey);
-      });
-    }
-
-    // Material Switcher Buttons
-    document.querySelectorAll('.mat-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const matKey = btn.getAttribute('data-mat');
-        applyMaterial(matKey);
-      });
-    });
+    const activeMaterialKey = 'gold';
 
     // -------------------------------------------------------------------------
     // Load Model: either from window.MODELO_FBX_BASE64 or fetch('modelo.fbx')
@@ -1123,7 +1106,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function onModelLoaded(fbxObject) {
       fbxObject.traverse((child) => {
         if (child.isMesh) {
-          loadedMesh = child;
           if (child.geometry) {
             child.geometry.computeVertexNormals();
           }
@@ -1136,7 +1118,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const size = new THREE.Vector3();
       box.getSize(size);
       const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 1.6 / (maxDim || 1);
+      const scale = 1.9 / (maxDim || 1);
       fbxObject.scale.setScalar(scale);
 
       // Re-center
@@ -1183,77 +1165,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (loaderOverlay) loaderOverlay.classList.add('hidden');
     }
 
-    // -------------------------------------------------------------------------
-    // Interactive 360° Drag & Physics (Lando Norris style)
-    // -------------------------------------------------------------------------
-    let isDragging = false;
-    let prevPointerX = 0;
-    let prevPointerY = 0;
-    let dragVelocityX = 0;
-    let dragVelocityY = 0;
-    let autoRotate = true;
-
-    // Default resting rotation
-    const defaultRot = { x: 0.15, y: -0.45 };
-    let currentRotX = defaultRot.x;
-    let currentRotY = defaultRot.y;
-
-    container.addEventListener('pointerdown', (e) => {
-      isDragging = true;
-      prevPointerX = e.clientX;
-      prevPointerY = e.clientY;
-      dragVelocityX = 0;
-      dragVelocityY = 0;
-      container.classList.add('grabbing');
-      container.setPointerCapture(e.pointerId);
-    });
-
-    container.addEventListener('pointermove', (e) => {
-      if (!isDragging) return;
-      const deltaX = e.clientX - prevPointerX;
-      const deltaY = e.clientY - prevPointerY;
-      prevPointerX = e.clientX;
-      prevPointerY = e.clientY;
-
-      dragVelocityY = deltaX * 0.007;
-      dragVelocityX = deltaY * 0.007;
-
-      currentRotY += dragVelocityY;
-      currentRotX += dragVelocityX;
-      currentRotX = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, currentRotX));
-    });
-
-    function onPointerUp(e) {
-      if (isDragging) {
-        isDragging = false;
-        container.classList.remove('grabbing');
-        try { container.releasePointerCapture(e.pointerId); } catch (_) {}
-      }
-    }
-    container.addEventListener('pointerup', onPointerUp);
-    container.addEventListener('pointercancel', onPointerUp);
-
-    // Auto-rotate toggle button
-    const autoRotateBtn = document.getElementById('toggle-autorotate-btn');
-    if (autoRotateBtn) {
-      autoRotateBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        autoRotate = !autoRotate;
-        autoRotateBtn.classList.toggle('active', autoRotate);
-      });
-    }
-
-    // Reset view button
-    const resetBtn = document.getElementById('reset-3d-btn');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        currentRotX = defaultRot.x;
-        currentRotY = defaultRot.y;
-        dragVelocityX = 0;
-        dragVelocityY = 0;
-      });
-    }
+    // Slow continuous rotation for the background relic
+    let currentRotX = 0.15;
+    let currentRotY = -0.45;
 
     // -------------------------------------------------------------------------
     // Mouse Parallax & Scroll Choreography
@@ -1286,21 +1200,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Pulse bottom ember bounce light
       emberBounceLight.intensity = 2.4 + Math.sin(clockTime * 4) * 0.8;
 
-      // Rotate pedestal ring
-      pedestalRing.rotation.z += 0.003;
-
-      if (!isDragging) {
-        // Apply inertia drag damping
-        dragVelocityX *= 0.92;
-        dragVelocityY *= 0.92;
-        currentRotX += dragVelocityX;
-        currentRotY += dragVelocityY;
-
-        // Gentle auto rotation
-        if (autoRotate) {
-          currentRotY += 0.006;
-        }
-      }
+      // Gentle auto rotation
+      currentRotY += 0.006;
 
       // Mouse Parallax subtle tilt
       const targetParallaxX = mouseNormY * 0.14;
@@ -1311,7 +1212,7 @@ document.addEventListener('DOMContentLoaded', () => {
       modelPivot.rotation.y = currentRotY + targetParallaxY + (scrollRotationOffset * 0.15);
 
       // Idle floating breathing bob
-      masterGroup.position.y = Math.sin(clockTime * 1.5) * 0.05;
+      masterGroup.position.y = Math.sin(clockTime * 0.9) * 0.11;
 
       renderer.render(scene, camera);
     }
@@ -1322,9 +1223,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!container) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      fitCameraToContainer();
     });
   }
 
