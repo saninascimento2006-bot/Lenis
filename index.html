@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IKHÔR — Mitologia Grega Fantástica | Scrollytelling com Lenis</title>
+  <meta name="description" content="Uma jornada narrativa sombria pela Grécia Antiga fantástica. Conheça a geração esquecida de semideuses marcados pelo icor divino, perseguidos pelos homens e abandonados pelo Olimpo." />
+  
+  <!-- Favicon SVG inline -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2308090a' stroke='%23c5a059' stroke-width='4'/><path d='M50 18 L76 75 L24 75 Z' fill='none' stroke='%23c5a059' stroke-width='3'/><circle cx='50' cy='52' r='8' fill='%23c5a059'/></svg>" />
+
+  <!-- Google Fonts: Cinzel, Cormorant Garamond, Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Lenis CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.css" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="theme-dark">
+
+  <!-- Ambient Interactive Canvas (Burning Embers) -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Ambient Bottom Heat Glow for Embers -->
+  <div class="embers-ambient-glow" aria-hidden="true"></div>
+
+  <!-- Mouse Torch / Aura Light Effect -->
+  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+
+  <!-- Noise Grain Overlay -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- Header / Nav Bar -->
+  <header class="site-header" id="site-header">
+    <div class="header-container">
+      <a href="#prologo" class="brand-logo" data-scroll-to="#prologo">
+        <span class="logo-glyph">☥</span>
+        <div class="logo-text">
+          <span class="logo-title">IKHÔR</span>
+          <span class="logo-sub">Mitologia Grega Fantástica</span>
+        </div>
+      </a>
+
+      <!-- Quick chapter badges for desktop -->
+      <nav class="desktop-nav" aria-label="Navegação dos Capítulos">
+        <button class="nav-link" data-scroll-to="#prologo">01. Prólogo</button>
+        <button class="nav-link" data-scroll-to="#olimpo">02. O Olimpo</button>
+        <button class="nav-link" data-scroll-to="#epitetos">03. Epítetos</button>
+        <button class="nav-link" data-scroll-to="#sociedade">04. A Inquisição</button>
+        <button class="nav-link" data-scroll-to="#refugio">05. O Bosque</button>
+        <button class="nav-link" data-scroll-to="#ameacas">06. O Fardo</button>
+        <button class="nav-link" data-scroll-to="#epilogo">07. Epílogo</button>
+      </nav>
+
+      <!-- Utility Actions -->
+      <div class="header-actions">
+        <!-- Audio Atmosphere Toggle -->
+        <button id="audio-toggle-btn" class="util-btn" title="Alternar atmosfera sonora" aria-label="Alternar som ambiente">
+          <span class="util-icon">♪</span>
+          <span class="audio-label">Som: Mudo</span>
+        </button>
+
+        <!-- Motion Preference Indicator -->
+        <button id="motion-toggle-btn" class="util-btn" title="Controle de rolagem Lenis" aria-label="Controle de rolagem">
+          <span class="util-icon">⚡</span>
+          <span class="motion-label">Lenis: Ativo</span>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button id="mobile-menu-btn" class="mobile-toggle" aria-label="Abrir menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Reading Progress Bar -->
+    <div class="scroll-progress-bar" id="scroll-progress" aria-hidden="true"></div>
+  </header>
+
+  <!-- Mobile Dropdown Menu -->
+  <aside class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <span class="drawer-title">OS SETE MOMENTOS</span>
+      <button id="drawer-close-btn" class="drawer-close" aria-label="Fechar menu">&times;</button>
+    </div>
+    <ul class="drawer-links">
+      <li><a href="#prologo" data-scroll-to="#prologo"><span>I.</span> Prólogo: O Mundo Antigo</a></li>
+      <li><a href="#olimpo" data-scroll-to="#olimpo"><span>II.</span> O Olimpo: Os Deuses Indiferentes</a></li>
+      <li><a href="#epitetos" data-scroll-to="#epitetos"><span>III.</span> Sangue Divino: O Sistema de Epítetos</a></li>
+      <li><a href="#sociedade" data-scroll-to="#sociedade"><span>IV.</span> A Humanidade: A Inquisição de Bronze</a></li>
+      <li><a href="#refugio" data-scroll-to="#refugio"><span>V.</span> O Bosque Selvagem: O Refúgio</a></li>
+      <li><a href="#ameacas" data-scroll-to="#ameacas"><span>VI.</span> As Ameaças: Feras &amp; O Fardo do Icor</a></li>
+      <li><a href="#epilogo" data-scroll-to="#epilogo"><span>VII.</span> Epílogo: Sobreviver é Resistir</a></li>
+    </ul>
+  </aside>
+
+  <!-- Side Scrollytelling Tracker (Roman Numerals & Tooltips) -->
+  <nav class="side-tracker" aria-label="Indicador de progresso da narrativa">
+    <div class="tracker-line">
+      <div class="tracker-fill" id="tracker-fill"></div>
+    </div>
+    <ul class="tracker-points">
+      <li data-target="#prologo" class="tracker-dot active" title="Prólogo: O Mundo Antigo">
+        <span class="dot-num">I</span>
+        <span class="dot-label">Prólogo</span>
+      </li>
+      <li data-target="#olimpo" class="tracker-dot" title="O Olimpo">
+        <span class="dot-num">II</span>
+        <span class="dot-label">O Olimpo</span>
+      </li>
+      <li data-target="#epitetos" class="tracker-dot" title="Os Epítetos">
+        <span class="dot-num">III</span>
+        <span class="dot-label">Epítetos</span>
+      </li>
+      <li data-target="#sociedade" class="tracker-dot" title="A Humanidade">
+        <span class="dot-num">IV</span>
+        <span class="dot-label">Sociedade</span>
+      </li>
+      <li data-target="#refugio" class="tracker-dot" title="O Bosque">
+        <span class="dot-num">V</span>
+        <span class="dot-label">O Refúgio</span>
+      </li>
+      <li data-target="#ameacas" class="tracker-dot" title="As Ameaças">
+        <span class="dot-num">VI</span>
+        <span class="dot-label">Ameaças</span>
+      </li>
+      <li data-target="#epilogo" class="tracker-dot" title="Epílogo">
+        <span class="dot-num">VII</span>
+        <span class="dot-label">Epílogo</span>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- MAIN SCROLLYTELLING CONTAINER -->
+  <main id="main-content">
+
+    <!-- ==========================================
+         01. PRÓLOGO: O MUNDO ANTIGO
+         ========================================== -->
+    <section id="prologo" class="story-section hero-section" data-chapter="1">
+      <div class="hero-bg-container">
+        <!-- Atmospheric backdrop layers -->
+        <div class="hero-layer hero-backdrop"></div>
+        <div class="hero-layer hero-columns" aria-hidden="true"></div>
+        <div class="hero-layer hero-vignette"></div>
+      </div>
+
+      <div class="section-container hero-container-grid">
+        <!-- Left: Narrative Text Column -->
+        <div class="hero-content-col">
+          <div class="kicker-wrapper kicker-left">
+            <span class="greek-symbol">⚔</span>
+            <span class="greek-kicker">ΠΑΛΑΙΟΣ ΚΟΣΜΟΣ &bull; CAPÍTULO I</span>
+            <span class="greek-symbol">⚔</span>
+          </div>
+
+          <h1 class="hero-title">
+            <span class="hero-title-sub">UNIVERSO SANGUE &amp; RUÍNA</span>
+            <span class="hero-title-main">IKHÔR</span>
+            <span class="hero-title-tag">A SAGA DOS SEMIDEUSES REJEITADOS</span>
+          </h1>
+
+          <div class="hero-quote-box">
+            <div class="quote-border-top"></div>
+            <p class="hero-quote">
+              “Nascer de um deus não significa pertencer ao Olimpo.”
+            </p>
+            <div class="quote-border-bottom"></div>
+          </div>
+
+          <p class="hero-lead">
+            Sob as sombras das acácias milenares e templos de mármore partido, a Grécia Antiga não é o berço de heróis dourados celebrados em festins. É uma terra escura, mística e impiedosa, onde o sangue imortal corre nas veias de párias forçados a viver entre o terror dos mortais e o silêncio gélido dos deuses.
+          </p>
+
+          <div class="hero-actions">
+            <button class="cta-primary" data-scroll-to="#olimpo">
+              <span>Iniciar a Travessia</span>
+              <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+            </button>
+            <button class="cta-secondary" data-scroll-to="#epitetos">
+              <span>Explorar os Epítetos</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: 3D Model Stage (Lando Norris style) -->
+        <div class="hero-3d-col">
+          <div class="hero-3d-stage" id="hero-3d-stage">
+            <div class="stage-header">
+              <span class="stage-badge">RELÍQUIA PROIBIDA &bull; 3D</span>
+              <span class="drag-hint" id="drag-hint">✦ Arraste para girar em 360°</span>
+            </div>
+
+            <!-- WebGL Canvas for Three.js -->
+            <div class="canvas-3d-wrapper" id="canvas-3d-wrapper">
+              <canvas id="three-canvas"></canvas>
+              <div class="canvas-3d-loader" id="canvas-3d-loader">
+                <div class="loader-spinner"></div>
+                <span>Invocando a relíquia ancestral...</span>
+              </div>
+            </div>
+
+            <!-- Interactive Material & Control Bar -->
+            <div class="stage-controls">
+              <div class="mat-selector" role="group" aria-label="Acabamento da Relíquia">
+                <button class="mat-btn active" data-mat="gold" title="Ouro do Olimpo">
+                  <span class="mat-dot mat-gold"></span> Ouro
+                </button>
+                <button class="mat-btn" data-mat="bronze" title="Bronze Arcaico">
+                  <span class="mat-dot mat-bronze"></span> Bronze
+                </button>
+                <button class="mat-btn" data-mat="obsidian" title="Obsidiana Vulcânica">
+                  <span class="mat-dot mat-obsidian"></span> Obsidiana
+                </button>
+                <button class="mat-btn" data-mat="ichor" title="Icor Escarlate">
+                  <span class="mat-dot mat-ichor"></span> Icor
+                </button>
+              </div>
+
+              <div class="stage-action-btns">
+                <button id="toggle-autorotate-btn" class="stage-icon-btn active" title="Alternar rotação contínua">
+                  <span class="icon-glyph">⟳</span>
+                </button>
+                <button id="reset-3d-btn" class="stage-icon-btn" title="Resetar ângulo">
+                  <span class="icon-glyph">⌖</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator Cue -->
+      <div class="scroll-cue" data-scroll-to="#olimpo">
+        <span class="cue-text">Role para adentrar o abismo</span>
+        <div class="cue-chevron"></div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         02. O OLIMPO: OS DEUSES INDIFERENTES
+         ========================================== -->
+    <section id="olimpo" class="story-section pantheon-section" data-chapter="2">
+      <div class="section-container">
+        <header class="section-header">
+          <div class="kicker-wrapper">
+            <span class="greek-kicker">ΟΙ ΑΘΑΝΑΤΟΙ &bull; CAPÍTULO II</span>
+          </div>
+          <h2 class="section-title">O Olimpo Silencioso: A Soberba dos Deuses</h2>
+          <p class="section-subtitle">
+            As divindades tradicionais governam os céus, oceanos e profundezas com imensa majestade, mas encaram seus filhos carnais com completa indiferença. A ascendência divina não concede honra nem salvo-conduto.
+          </p>
+        </header>
+
+        <!-- Narrative Narrative Card -->
+        <div class="narrative-banner">
+          <div class="banner-icon">⚡</div>
+          <div class="banner-body">
+            <h3>A Ilusão da Proteção Divina</h3>
+            <p>
+              Nos poemas cantados pelos aedos nas praças, os semideuses recebem escudos mágicos e carruagens voadoras. Na realidade cruel deste universo, o nascimento de um bastardo divino é considerado pelos próprios progenitores como um incidente insignificante. Os deuses não respondem a súplicas filiais. Pelo contrário: a mera existência de um herdeiro mortal é vista como um reflexo incômodo de sua própria fraqueza carnal.
+            </p>
+          </div>
+        </div>
+
+        <!-- Interactive Pantheon Explorer -->
+        <div class="pantheon-explorer">
+          <div class="pantheon-filters" role="tablist" aria-label="Divindades do Olimpo">
+            <button class="filter-tab active" data-deity="zeus">Zeus</button>
+            <button class="filter-tab" data-deity="poseidon">Poseidon</button>
+            <button class="filter-tab" data-deity="hades">Hades</button>
+            <button class="filter-tab" data-deity="atena">Atena</button>
+            <button class="filter-tab" data-deity="apolo">Apolo</button>
+            <button class="filter-tab" data-deity="artemis">Ártemis</button>
+            <button class="filter-tab" data-deity="ares">Ares</button>
+            <button class="filter-tab" data-deity="demeter">Deméter</button>
+          </div>
+
+          <!-- Dynamic Deity Display Card -->
+          <div class="deity-showcase" id="deity-showcase">
+            <div class="deity-card-frame">
+              <div class="deity-badge">
+                <span class="deity-greek" id="deity-greek">ΖΕΥΣ</span>
+                <span class="deity-epithet-tag" id="deity-domain">O Rei dos Céus &bull; Soberano Impiedoso</span>
+              </div>
+              <h3 class="deity-name" id="deity-name">Zeus</h3>
+              <p class="deity-desc" id="deity-desc">
+                Governante do topo nevado do Monte Olimpo. Seus raios não distinguem templos de vilarejos. Jamais desceu para estender a mão a um filho condenado à fogueira pelos homens.
+              </p>
+              
+              <div class="deity-metrics">
+                <div class="metric-item">
+                  <span class="metric-label">Grau de Indiferença:</span>
+                  <div class="metric-bar"><div class="metric-fill" id="metric-fill-1" style="width: 95%;"></div></div>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Hostilidade aos Mortais:</span>
+                  <div class="metric-bar"><div class="metric-fill" id="metric-fill-2" style="width: 88%;"></div></div>
+                </div>
+              </div>
+
+              <blockquote class="deity-quote" id="deity-quote">
+                “O raio cai sobre carvalhos e bastardos com o mesmo peso silencioso.”
+              </blockquote>
+            </div>
+
+            <!-- Pantheon Grid Quick Overview -->
+            <div class="pantheon-cards-grid">
+              <article class="mini-deity-card active" data-deity="zeus">
+                <div class="mini-icon">⚡</div>
+                <h4>Zeus</h4>
+                <p>O Tempestuoso</p>
+              </article>
+              <article class="mini-deity-card" data-deity="poseidon">
+                <div class="mini-icon">🔱</div>
+                <h4>Poseidon</h4>
+                <p>Abalador da Terra</p>
+              </article>
+              <article class="mini-deity-card" data-deity="hades">
+                <div class="mini-icon">💀</div>
+                <h4>Hades</h4>
+                <p>O Invisível</p>
+              </article>
+              <article class="mini-deity-card" data-deity="atena">
+                <div class="mini-icon">🦉</div>
+                <h4>Atena</h4>
+                <p>A Estrategista</p>
+              </article>
+              <article class="mini-deity-card" data-deity="apolo">
+                <div class="mini-icon">☀️</div>
+                <h4>Apolo</h4>
+                <p>O Flecheiro Dourado</p>
+              </article>
+              <article class="mini-deity-card" data-deity="artemis">
+                <div class="mini-icon">🏹</div>
+                <h4>Ártemis</h4>
+                <p>A Caçadora Selvagem</p>
+              </article>
+              <article class="mini-deity-card" data-deity="ares">
+                <div class="mini-icon">🩸</div>
+                <h4>Ares</h4>
+                <p>O Flagelo da Guerra</p>
+              </article>
+              <article class="mini-deity-card" data-deity="demeter">
+                <div class="mini-icon">🌾</div>
+                <h4>Deméter</h4>
+                <p>A Doadora de Espigas</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         03. OS DESCENDENTES: SANGUE & EPÍTETOS
+         ========================================== -->
+    <section id="epitetos" class="story-section epithets-section" data-chapter="3">
+      <div class="section-container">
+        <header class="section-header">
+          <div class="kicker-wrapper">
+            <span class="greek-kicker">ΤΟ ΘΕΙΟΝ ΑΙΜΑ &bull; CAPÍTULO III</span>
+          </div>
+          <h2 class="section-title">Os Descendentes: O Sistema dos Epítetos Divinos</h2>
+          <p class="section-subtitle">
+            Os semideuses não herdam poderes genéricos. Suas habilidades manifestam-se a partir dos <em>Epítetos</em> invocados no momento de sua concepção. Uma mesma divindade engendra descendentes com dons opostos: a salvação de um é a praga do outro.
+          </p>
+        </header>
+
+        <!-- Explanatory diagram of Epithets -->
+        <div class="epithet-infographic">
+          <div class="info-card">
+            <div class="info-num">01</div>
+            <h4>Despertar Espontâneo</h4>
+            <p>O poder irrompe sem aviso prévio na puberdade, frequentemente desatando acidentes trágicos nas famílias adotivas.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-num">02</div>
+            <h4>O Epíteto Marcador</h4>
+            <p>O deus não doa seu domínio inteiro. Um semideus de Apolo pode ser um santo curador ou um senhor de gafanhotos famintos.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-num">03</div>
+            <h4>Sem Identidade Divina</h4>
+            <p>A maioria morre sem saber qual dos olímpicos gerou sua desgraça. O sangue apenas queima e responde ao perigo.</p>
+          </div>
+        </div>
+
+        <!-- Interactive Epithet Explorer Matrix -->
+        <div class="epithet-matrix-wrapper">
+          <div class="matrix-heading">
+            <span class="matrix-tag">GRIMÓRIO INTERATIVO</span>
+            <h3>Explore as Ramificações dos Epítetos</h3>
+            <p>Selecione uma divindade para ver como seus diferentes epítetos forjam habilidades sobrenaturais distintas nos semideuses:</p>
+          </div>
+
+          <div class="matrix-nav-buttons">
+            <button class="matrix-btn active" data-matrix="apolo">Apolo (O Arqueiro)</button>
+            <button class="matrix-btn" data-matrix="poseidon">Poseidon (O Mar)</button>
+            <button class="matrix-btn" data-matrix="atena">Atena (A Sabedoria)</button>
+            <button class="matrix-btn" data-matrix="artemis">Ártemis (A Fera)</button>
+            <button class="matrix-btn" data-matrix="hades">Hades (O Submundo)</button>
+          </div>
+
+          <!-- Epithet details container -->
+          <div class="epithet-cards-container" id="epithet-cards-container">
+            <!-- Cards rendered via JS or standard markup -->
+          </div>
+        </div>
+
+        <!-- Demigod Dossiers / Survivors Chronicle -->
+        <div class="survivors-dossier-wrapper">
+          <h3 class="sub-block-title">Dossiê de Sobreviventes: Rostos da Nova Geração</h3>
+          <p class="sub-block-desc">Eles não habitam palácios de ouro. Conheça três semideuses lutando por mais um sopro de vida nas províncias esquecidas:</p>
+          
+          <div class="dossier-grid">
+            <!-- Demigod 1 -->
+            <article class="dossier-card">
+              <div class="dossier-badge">Filho de Apolo &bull; Epíteto Sminthaios</div>
+              <h4 class="dossier-name">Nikos de Corinto</h4>
+              <p class="dossier-role">Exilado nos pântanos do Golfo</p>
+              <div class="dossier-detail">
+                <span class="detail-label">Poder Desperto:</span>
+                <span class="detail-val">Controle de Miasmas &amp; Pragas</span>
+              </div>
+              <div class="dossier-detail">
+                <span class="detail-label">Idade / Expectativa:</span>
+                <span class="detail-val">19 anos &bull; Veias em decomposição</span>
+              </div>
+              <p class="dossier-bio">
+                Ao completar quinze anos, gafanhotos consumiram a colheita de seu padrasto em uma noite. Fugiu para os mangues para evitar que seu próprio suor apodrecesse as plantações vizinhas.
+              </p>
+            </article>
+
+            <!-- Demigod 2 -->
+            <article class="dossier-card">
+              <div class="dossier-badge">Filha de Atena &bull; Epíteto Promachos</div>
+              <h4 class="dossier-name">Thaleia da Tessália</h4>
+              <p class="dossier-role">Mercenária anônima sob elmo fechado</p>
+              <div class="dossier-detail">
+                <span class="detail-label">Poder Desperto:</span>
+                <span class="detail-val">Percepção Cinética &amp; Combate Preditivo</span>
+              </div>
+              <div class="dossier-detail">
+                <span class="detail-label">Idade / Expectativa:</span>
+                <span class="detail-val">23 anos &bull; Enxaquecas hemorrágicas</span>
+              </div>
+              <p class="dossier-bio">
+                Prevê a trajetória de cada dardo e lança três segundos antes do arremesso. Esconde os olhos que brilham em âmbar durante as batalhas para não ser executada pelos próprios companheiros de falange.
+              </p>
+            </article>
+
+            <!-- Demigod 3 -->
+            <article class="dossier-card">
+              <div class="dossier-badge">Filho de Poseidon &bull; Epíteto Enosichthon</div>
+              <h4 class="dossier-name">Kassian de Creta</h4>
+              <p class="dossier-role">Fugitivo nas cavernas do Monte Ida</p>
+              <div class="dossier-detail">
+                <span class="detail-label">Poder Desperto:</span>
+                <span class="detail-val">Ressonância Sísmica &amp; Fratura Pétrea</span>
+              </div>
+              <div class="dossier-detail">
+                <span class="detail-label">Idade / Expectativa:</span>
+                <span class="detail-val">17 anos &bull; Ossos calcificados</span>
+              </div>
+              <p class="dossier-bio">
+                Quando escravizado em uma mina de calcário, seus gritos de desespero racharam a montanha inteira, libertando os mineradores. Agora é caçado tanto pelos nobres de Cnossos quanto por bestas do abismo.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         04. A HUMANIDADE: A INQUISIÇÃO DE BRONZE
+         ========================================== -->
+    <section id="sociedade" class="story-section society-section" data-chapter="4">
+      <div class="section-container">
+        <header class="section-header">
+          <div class="kicker-wrapper">
+            <span class="greek-kicker">ΟΙ ΘΝΗΤΟΙ ΚΑΙ Ο ΦΟΒΟΣ &bull; CAPÍTULO IV</span>
+          </div>
+          <h2 class="section-title">A Humanidade: Entre o Medo e a Ciência Predatória</h2>
+          <p class="section-subtitle">
+            O maior algoz do semideus nem sempre ruge com garras de leão. Ele veste mantos de filósofo, empunha decretos senatoriais e transporta gaiolas de chumbo.
+          </p>
+        </header>
+
+        <div class="society-split">
+          <div class="society-text-col">
+            <div class="conflict-pillar">
+              <div class="pillar-icon">⛓️</div>
+              <div class="pillar-content">
+                <h3>A Condição Marginalizada</h3>
+                <p>
+                  Semelhante aos mutantes perseguidos das lendas modernas, os semideuses deste mundo vivem sob a sombra da segregação. A população mortal os acusa de atrair tempestades, secas e a maldição dos céus. Uma simples marca de nascença incomum ou um reflexo dourado na íris é suficiente para provocar um linchamento na ágora.
+                </p>
+              </div>
+            </div>
+
+            <div class="conflict-pillar">
+              <div class="pillar-icon">⚖️</div>
+              <div class="pillar-content">
+                <h3>A Ordem dos Magistrados de Chumbo</h3>
+                <p>
+                  Em Atenas e Tebas, corporações de oligarcas criaram brigadas especiais equipadas com manoplas de chumbo — o metal denso que embota a emanação mística do icor. Semideuses capturados não recebem julgamento: têm seus tendões cortados e são levados aos calabouços.
+                </p>
+              </div>
+            </div>
+
+            <div class="conflict-pillar">
+              <div class="pillar-icon">⚗️</div>
+              <div class="pillar-content">
+                <h3>A Ciência Predatória: A Extração do Icor</h3>
+                <p>
+                  Médicos clandestinos e alquimistas imperiais descobriram que o sangue dos semideuses possui propriedades curativas e destrutivas fascinantes. Em laboratórios fétidos, realizam vivissecção para sintetizar elixires de vigor para tiranos senis e venenos capazes de incendiar exércitos inteiros.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alchemical Parchment / Blueprint Mockup -->
+          <div class="society-artifact-col">
+            <div class="parchment-frame">
+              <div class="parchment-header">
+                <span class="parchment-tag">TRATADO CONFIDENCIAL &bull; CÓDICE CLANDESTINO</span>
+                <h4>Anatomia do Icor Humano-Divino</h4>
+                <p class="parchment-origin">Arquivo de dissecação apreendido em Tebas</p>
+              </div>
+
+              <div class="parchment-body">
+                <div class="sketch-diagram">
+                  <!-- SVG Anatomical Sketch -->
+                  <svg viewBox="0 0 300 200" class="anatomy-svg" aria-label="Diagrama de extração de icor">
+                    <circle cx="150" cy="100" r="70" fill="none" stroke="#c5a059" stroke-width="1.5" stroke-dasharray="4 2"/>
+                    <line x1="80" y1="100" x2="220" y2="100" stroke="#7e6336" stroke-width="1"/>
+                    <line x1="150" y1="30" x2="150" y2="170" stroke="#7e6336" stroke-width="1"/>
+                    <circle cx="150" cy="100" r="14" fill="#681b28" stroke="#c5a059" stroke-width="2"/>
+                    <!-- Pulse rings -->
+                    <circle cx="150" cy="100" r="35" fill="none" stroke="#dfb76c" stroke-width="1" opacity="0.6"/>
+                    <text x="150" y="96" fill="#f0ede6" font-size="8" text-anchor="middle" font-family="Cinzel">CORAÇÃO</text>
+                    <text x="150" y="108" fill="#dfb76c" font-size="7" text-anchor="middle" font-family="Cinzel">ICOR PURÍSSIMO</text>
+                    <!-- Annotations -->
+                    <path d="M 180 60 L 220 40 L 250 40" fill="none" stroke="#c5a059" stroke-width="1"/>
+                    <text x="220" y="35" fill="#c8c4bc" font-size="8" font-family="Cormorant Garamond">Artérias de combustão</text>
+                    
+                    <path d="M 120 140 L 80 160 L 40 160" fill="none" stroke="#c5a059" stroke-width="1"/>
+                    <text x="40" y="155" fill="#c8c4bc" font-size="8" font-family="Cormorant Garamond">Resíduos de cinza mortal</text>
+                  </svg>
+                </div>
+
+                <div class="parchment-notes">
+                  <p><strong>Observação Médica:</strong> “A infusão de chumbo líquido a 80 graus estanca temporariamente a luminescência do sujeito número VII. A coagulação do icor produz calor extremo, derretendo frascos comuns de cerâmica. Recomendamos câmaras de ferro forjado para drenagem contínua.”</p>
+                </div>
+              </div>
+
+              <div class="parchment-footer">
+                <span>ESTADO: VIGENTE</span>
+                <span>DESTINO: FORNO DE CINZAS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         05. O BOSQUE SELVAGEM: O REFÚGIO
+         ========================================== -->
+    <section id="refugio" class="story-section forest-section" data-chapter="5">
+      <div class="forest-atmosphere" aria-hidden="true"></div>
+
+      <div class="section-container">
+        <header class="section-header">
+          <div class="kicker-wrapper">
+            <span class="greek-kicker">ΤΟ ΑΓΡΙΟΝ ΔΑΣΟΣ &bull; CAPÍTULO V</span>
+          </div>
+          <h2 class="section-title">O Bosque Selvagem: O Refúgio dos Condenados</h2>
+          <p class="section-subtitle">
+            Onde as estradas romanas e helênicas terminam e a vegetação primordial devora templos em ruínas, os fugitivos encontram o único santuário capaz de ocultar seu brilho da vista dos homens.
+          </p>
+        </header>
+
+        <div class="forest-story-grid">
+          <!-- Text panel -->
+          <div class="forest-narrative">
+            <h3 class="forest-title">O Vale de Citerão e as Matas Sem Nome</h3>
+            <p>
+              As florestas da Grécia Antiga não são jardins amenos: são labirintos de carvalhos centenários cujas raízes bebem de riachos subterrâneos intocados desde a Guerra dos Titãs. Para um semideus, a selva é um lar ambivalente: fria e perigosa, mas generosa em silêncio.
+            </p>
+            <p>
+              Em pequenas clareiras cercadas por ciprestes sagrados, agrupamentos de sobreviventes constroem cabanas camufladas na folhagem. Ali, não há altares para deuses nem bandeiras de cidades-estado. Compartilham a caça, tratam queimaduras internas provocadas pelo uso dos poderes e ensinam os mais jovens a disfarçar suas emanações.
+            </p>
+            <blockquote class="forest-quote">
+              “A casca do carvalho não julga o sangue que rega sua raiz. Se sangramos, a terra nos acolhe.”
+            </blockquote>
+          </div>
+
+          <!-- Interactive Havens Explorer -->
+          <div class="haven-explorer">
+            <h4 class="haven-headline">Santuários Clandestinos Mapeados</h4>
+            
+            <div class="haven-card">
+              <div class="haven-icon">🌲</div>
+              <div class="haven-data">
+                <h5>O Carvalho das Sombras</h5>
+                <span class="haven-loc">Monte Helicão &bull; Altitude 1.400m</span>
+                <p>Uma árvore monumental com tronco oco onde cabem trinta fugitivos. A seiva escura neutraliza temporariamente o odor de icor.</p>
+              </div>
+            </div>
+
+            <div class="haven-card">
+              <div class="haven-icon">🌊</div>
+              <div class="haven-data">
+                <h5>A Ravina da Água Morta</h5>
+                <span class="haven-loc">Fronteira com a Arcádia</span>
+                <p>Quedas d'água ricas em enxofre. O vapor constante confunde o olfato de cães de caça e bestas farejadoras.</p>
+              </div>
+            </div>
+
+            <div class="haven-card">
+              <div class="haven-icon">🏛️</div>
+              <div class="haven-data">
+                <h5>O Templo Devorado</h5>
+                <span class="haven-loc">Desfiladeiro de Delfos Abandonado</span>
+                <p>Santuário titânico anterior à era de Zeus. As inscrições arcaicas protegem a caverna contra a visão de divindades do ar.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         06. AS AMEAÇAS: UM MUNDO HOSTIL
+         ========================================== -->
+    <section id="ameacas" class="story-section threats-section" data-chapter="6">
+      <div class="section-container">
+        <header class="section-header">
+          <div class="kicker-wrapper">
+            <span class="greek-kicker">ΟΙ ΚΙΝΔΥΝΟΙ &bull; CAPÍTULO VI</span>
+          </div>
+          <h2 class="section-title">As Ameaças: O Cerco Constante</h2>
+          <p class="section-subtitle">
+            A sobrevivência é uma conta regressiva. Três frentes de perigo cercam os descendentes em todas as direções da Hélade.
+          </p>
+        </header>
+
+        <!-- Threat Triptych -->
+        <div class="threats-triptych">
+          <!-- Danger 1 -->
+          <article class="threat-card threat-danger-high">
+            <div class="threat-header">
+              <span class="threat-num">AMEAÇA I</span>
+              <span class="threat-level">LETALIDADE EXTREMA</span>
+            </div>
+            <div class="threat-icon-large">🐺</div>
+            <h3 class="threat-name">As Feras e Monstros Arcaicos</h3>
+            <p class="threat-desc">
+              Quimeras, Manticoras, Górgonas remanescentes e Matilhas do Tártaro. O icor divino possui um aroma adocicado inconfundível para criaturas mitológicas famintas. Um semideus que sangra em terreno aberto atrai monstros em um raio de dez léguas.
+            </p>
+            <ul class="threat-list">
+              <li>Farejam o sangue a quilômetros</li>
+              <li>Imunes a armamentos convencionais de bronze</li>
+              <li>Caçam sem cansaço pelas noites sem lua</li>
+            </ul>
+          </article>
+
+          <!-- Danger 2 -->
+          <article class="threat-card threat-danger-mid">
+            <div class="threat-header">
+              <span class="threat-num">AMEAÇA II</span>
+              <span class="threat-level">PERSEGUIÇÃO SISTÊMICA</span>
+            </div>
+            <div class="threat-icon-large">🏹</div>
+            <h3 class="threat-name">Caçadores de Cabeças &amp; Hoplitas</h3>
+            <p class="threat-desc">
+              Patrulhas de pólis ricas oferecem recompensas de peso equivalente em prata pelo cadáver ou captura de um semideus. Redes com ganchos de ferro, arcos compósitos e mastins alimentados com carne crua compõem suas expedições de extermínio.
+            </p>
+            <ul class="threat-list">
+              <li>Financiados por nobres e cultos cívicos</li>
+              <li>Táticas militares coordenadas de cerco</li>
+              <li>Uso de armadilhas de chumbo e redes de abafamento</li>
+            </ul>
+          </article>
+
+          <!-- Danger 3 -->
+          <article class="threat-card threat-danger-burn">
+            <div class="threat-header">
+              <span class="threat-num">AMEAÇA III</span>
+              <span class="threat-level">O INIMIGO INTERNO</span>
+            </div>
+            <div class="threat-icon-large">🔥</div>
+            <h3 class="threat-name">O Fardo do Icor: A Chama que Consome</h3>
+            <p class="threat-desc">
+              O corpo mortal não foi projetado para conter a essência de um imortal. Cada vez que uma habilidade é manifestada, vasos capilares entram em combustão e a força vital é abreviada. Quase nenhum semideus sobrevive além do vigésimo quinto inverno: o sangue divino devora a carne que o hospeda.
+            </p>
+            <ul class="threat-list">
+              <li>Febres incandescentes após cada uso de poder</li>
+              <li>Calcificação e rigidez gradual dos órgãos vitais</li>
+              <li>Expectativa média de vida: 18 a 26 invernos</li>
+            </ul>
+          </article>
+        </div>
+
+        <!-- Survival Quote Highlight -->
+        <div class="burden-callout">
+          <p>
+            “Não precisamos de monstros para morrer cedo. O próprio sangue de nossos pais nos mata gota a gota.”
+          </p>
+          <span class="callout-source">— Inscrição anônima na Caverna de Citerão</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         07. EPÍLOGO: SOBREVIVER É RESISTIR
+         ========================================== -->
+    <section id="epilogo" class="story-section epilogue-section" data-chapter="7">
+      <div class="section-container">
+        <header class="section-header epilogue-header">
+          <div class="kicker-wrapper">
+            <span class="greek-kicker">Η ΕΠΙΒΙΩΣΙΣ &bull; CAPÍTULO VII</span>
+          </div>
+          <h2 class="section-title">Epílogo: Sobreviver Já é Resistir</h2>
+          <p class="section-subtitle">
+            Não há tronos reservados no Olimpo, nem canções de vitória nos templos. Mas a cada respiração roubada à noite, os esquecidos desafiam o decreto do destino.
+          </p>
+        </header>
+
+        <!-- Final Testament Manifesto Box -->
+        <div class="manifesto-box">
+          <div class="manifesto-seal">Ω</div>
+          <h3 class="manifesto-title">O JURAMENTO DA TERRA ESCURA</h3>
+          <p class="manifesto-body">
+            Não imploraremos pela compaixão dos céus que nunca nos viram. Não curvaremos a espinha perante os homens que nos temem por fraqueza própria. Construiremos nossas fogueiras onde as sombras forem mais densas. E quando a carne mortal ceder à queimação do icor, deixaremos na rocha a prova de que estivemos aqui.
+          </p>
+          <div class="manifesto-climax-quote">
+            “Os deuses nos deram o sangue.<br />
+            Os mortais nos deram o medo.<br />
+            E o mundo nos deixou apenas a escolha de sobreviver.”
+          </div>
+        </div>
+
+        <!-- ==========================================
+             INTERACTIVE ORACLE: DESCUBRA SEU EPÍTETO
+             ========================================== -->
+        <div class="oracle-experience" id="oracle-experience">
+          <div class="oracle-frame">
+            <div class="oracle-header">
+              <span class="oracle-tag">ORÁCULO DE DELFOS CLANDESTINO</span>
+              <h3>Qual Epíteto Dorme no Seu Sangue?</h3>
+              <p>Responda às três indagações da noite arcaica e descubra a manifestação que herdarias no universo de IKHÔR:</p>
+            </div>
+
+            <!-- Quiz Questions Form -->
+            <form id="oracle-form" class="oracle-form" onsubmit="return false;">
+              <!-- Question 1 -->
+              <div class="oracle-step active" data-step="1">
+                <span class="step-num">Questão 1 de 3</span>
+                <h4 class="step-question">Quando a patrulha de magistrados cerca sua vila nas primeiras horas da madrugada, qual é seu instinto primordial?</h4>
+                <div class="oracle-options">
+                  <label class="oracle-opt">
+                    <input type="radio" name="q1" value="luz" required />
+                    <span class="opt-box">
+                      <strong>Cegar e Purificar:</strong> Queimar a escuridão com uma labareda para que todos fujam, custe o que custar.
+                    </span>
+                  </label>
+                  <label class="oracle-opt">
+                    <input type="radio" name="q1" value="sombra" />
+                    <span class="opt-box">
+                      <strong>Mimetizar e Desaparecer:</strong> Unir-se à névoa das acácias e deslizar em silêncio absoluto.
+                    </span>
+                  </label>
+                  <label class="oracle-opt">
+                    <input type="radio" name="q1" value="furia" />
+                    <span class="opt-box">
+                      <strong>Abalar a Estrutura:</strong> Fraturar o piso de pedra para abrir valas e quebrar o cerco pela força bruta.
+                    </span>
+                  </label>
+                  <label class="oracle-opt">
+                    <input type="radio" name="q1" value="cura" />
+                    <span class="opt-box">
+                      <strong>Proteger os Feridos:</strong> Ficar para trás para estancar as feridas dos idosos e crianças antes de partir.
+                    </span>
+                  </label>
+                </div>
+                <button type="button" class="oracle-next-btn" data-goto="2">Prosseguir &rarr;</button>
+              </div>
+
+              <!-- Question 2 -->
+              <div class="oracle-step" data-step="2">
+                <span class="step-num">Questão 2 de 3</span>
+                <h4 class="step-question">Se um frasco de icor de seus irmãos caídos estivesse em suas mãos, o que farias?</h4>
+                <div class="oracle-options">
+                  <label class="oracle-opt">
+                    <input type="radio" name="q2" value="cura" required />
+                    <span class="opt-box">
+                      <strong>Consagrar à Terra:</strong> Devolver o sangue às raízes do bosque para que nada humano o profane.
+                    </span>
+                  </label>
+                  <label class="oracle-opt">
+                    <input type="radio" name="q2" value="furia" />
+                    <span class="opt-box">
+                      <strong>Forjar Vingança:</strong> Usar o calor latente para criar armas incendiárias contra os tiranos.
+                    </span>
+                  </label>
+                  <label class="oracle-opt">
+                    <input type="radio" name="q2" value="luz" />
+                    <span class="opt-box">
+                      <strong>Preservar a Memória:</strong> Beber uma gota para ouvir os sussurros do espírito que partiu.
+                    </span>
+                  </label>
+                  <label class="oracle-opt">
+                    <input type="radio" name="q2" value="sombra" />
+                    <span class="opt-box">
+                      <strong>Ocultar sob Chumbo:</strong> Enterrar nas profundezas de uma caverna inacessível a homens e deuses.
+                    </span>
+                  </label>
+                </div>
+                <div class="step-nav-buttons">
+                  <button type="button" class="oracle-back-btn" data-goto="1">&larr; Voltar</button>
+                  <button type="button" class="oracle-next-btn" data-goto="3">Prosseguir &rarr;</button>
+                </div>
+              </div>
+
+              <!-- Question 3 -->
+              <div class="oracle-step" data-step="3">
+                <span class="step-num">Questão 3 de 3</span>
+                <h4 class="step-question">O que para você representa a maior vitória em um mundo que deseja sua morte?</h4>
+                <div class="oracle-options">
+                  <label class="oracle-opt">
+                    <input type="radio" name="q3" value="sombra" required />
+                    <span class="opt-box">
+                      <strong>A Liberdade do Silêncio:</strong> Viver despercebido, onde nenhum senhor mortal ou imortal dite meus passos.
+                    </span>
+                  </label>
+                  <label class="oracle-opt">
+                    <input type="radio" name="q3" value="furia" />
+                    <span class="opt-box">
+                      <strong>A Resistência Feroz:</strong> Fazer com que cada caçador saiba que não caímos sem cobrar um preço amargo.
+                    </span>
+                  </label>
+                  <label class="oracle-opt">
+                    <input type="radio" name="q3" value="luz" />
+                    <span class="opt-box">
+                      <strong>A Preservação da Verdade:</strong> Registrar nossa história para que os séculos futuros conheçam os esquecidos.
+                    </span>
+                  </label>
+                  <label class="oracle-opt">
+                    <input type="radio" name="q3" value="cura" />
+                    <span class="opt-box">
+                      <strong>A Irmandade Viva:</strong> Manter meus companheiros respirando e aquecidos por mais um inverno.
+                    </span>
+                  </label>
+                </div>
+                <div class="step-nav-buttons">
+                  <button type="button" class="oracle-back-btn" data-goto="2">&larr; Voltar</button>
+                  <button type="button" class="oracle-submit-btn" id="oracle-submit-btn">Despertar o Epíteto ✨</button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Oracle Result Card (Hidden by default) -->
+            <div class="oracle-result" id="oracle-result" style="display: none;">
+              <div class="result-parchment">
+                <div class="result-header">
+                  <span class="result-crest">✧</span>
+                  <span class="result-proclamation">VEREDITO DO ORÁCULO DE DELFOS</span>
+                </div>
+                <h4 class="result-epithet-title" id="result-epithet-title">Apolo Phoibos</h4>
+                <p class="result-deity-subtitle" id="result-deity-subtitle">Descendente do Portador da Luz Ardente</p>
+                <div class="result-divider"></div>
+                
+                <div class="result-body">
+                  <div class="result-stat-row">
+                    <span class="stat-name">Manifestação do Poder:</span>
+                    <span class="stat-val" id="result-power">Combustão Solar &amp; Luminescência Cegante</span>
+                  </div>
+                  <div class="result-stat-row">
+                    <span class="stat-name">O Fardo que Carregas:</span>
+                    <span class="stat-val" id="result-burden">Visão reduzida na penumbra &amp; febres noturnas</span>
+                  </div>
+                  <div class="result-stat-row">
+                    <span class="stat-name">Refúgio Recomendado:</span>
+                    <span class="stat-val" id="result-haven">As Alturas Nebulosas do Monte Parnaso</span>
+                  </div>
+                  <p class="result-flavor" id="result-flavor">
+                    “Teu brilho é tua maior arma e tua mais cruel traição. Aprende a guardar a faísca nas entranhas da noite antes que o fogo consuma tuas próprias mãos.”
+                  </p>
+                </div>
+
+                <div class="result-actions">
+                  <button type="button" class="cta-secondary" id="oracle-reset-btn">Consultar Novamente</button>
+                  <button type="button" class="cta-primary" data-scroll-to="#prologo">Retornar ao Prólogo</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Briefing Compliance & Project Meta Footer Card -->
+        <div class="project-specs-card">
+          <div class="specs-grid">
+            <div class="spec-col">
+              <h5>Tecnologias do Projeto</h5>
+              <ul>
+                <li><strong>Lenis Scroll:</strong> Rolagem cinematográfica ultra-suave</li>
+                <li><strong>GSAP &amp; ScrollTrigger:</strong> Animações orquestradas à descida</li>
+                <li><strong>Web Audio API:</strong> Trilha sonora procedural adaptativa</li>
+                <li><strong>HTML5 / CSS3 / Vanilla JS:</strong> Zero frameworks pesados</li>
+              </ul>
+            </div>
+            <div class="spec-col">
+              <h5>Conceito Narrativo</h5>
+              <ul>
+                <li><strong>Universo:</strong> Mitologia Grega Fantástica Sombria</li>
+                <li><strong>Temática:</strong> Marginalização, preconceito e sobrevivência</li>
+                <li><strong>Mecânica:</strong> Sistema místico de Epítetos Divinos</li>
+                <li><strong>Mensagem:</strong> A resistência dos semideuses esquecidos</li>
+              </ul>
+            </div>
+            <div class="spec-col">
+              <h5>Atalhos &amp; Acessibilidade</h5>
+              <ul>
+                <li>Suporte nativo a <code>prefers-reduced-motion</code></li>
+                <li>Navegação por teclado e botões de atalho</li>
+                <li>Controle de áudio ambiente no topo</li>
+                <li>Design totalmente responsivo (mobile, tablet, desktop)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">IKHÔR</span>
+        <p class="footer-tagline">“Nascer de um deus não significa pertencer ao Olimpo.”</p>
+      </div>
+
+      <div class="footer-nav">
+        <button class="footer-link" data-scroll-to="#prologo">Prólogo</button>
+        <button class="footer-link" data-scroll-to="#olimpo">O Olimpo</button>
+        <button class="footer-link" data-scroll-to="#epitetos">Epítetos</button>
+        <button class="footer-link" data-scroll-to="#sociedade">A Inquisição</button>
+        <button class="footer-link" data-scroll-to="#refugio">O Bosque</button>
+        <button class="footer-link" data-scroll-to="#ameacas">As Ameaças</button>
+        <button class="footer-link" data-scroll-to="#epilogo">Epílogo</button>
+      </div>
+
+      <div class="footer-credit">
+        <p>Projeto de Scrollytelling desenvolvido com base no <code>briefing.md</code>.</p>
+        <p class="footer-subtext">Tecnologia de rolagem Lenis &bull; Grécia Antiga Fantástica &bull; &copy; 2026</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Three.js, fflate & FBXLoader Dependencies -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+
+  <!-- Preloaded 3D Model Data -->
+  <script src="modelo-data.js"></script>
+
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis Smooth Scroll CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <!-- Main Application Logic -->
+  <script src="script.js"></script>
+</body>
+</html>

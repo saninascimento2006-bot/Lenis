@@ -1,0 +1,23 @@
+{
+  "name": "ikhor-mitologia-grega",
+  "version": "1.0.0",
+  "description": "Site narrativo e scrollytelling de Mitologia Grega Fantástica utilizando Lenis.",
+  "scripts": {
+    "start": "npx serve . -l 3000",
+    "dev": "npx serve . -l 3000",
+    "preview": "python -m http.server 8000"
+  },
+  "keywords": [
+    "lenis",
+    "scrollytelling",
+    "greek-mythology",
+    "gsap",
+    "dark-fantasy"
+  ],
+  "author": "Antigravity Pair Programmer",
+  "license": "MIT",
+  "dependencies": {
+    "fflate": "^0.8.3",
+    "three": "^0.187.0"
+  }
+}
