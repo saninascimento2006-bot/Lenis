@@ -739,7 +739,8 @@ button {
   letter-spacing: 0.15em;
   line-height: 1.12;
   /* Extra room so the clipped gradient never cuts the glyph edges */
-  padding: 0.08em 0.05em 0.06em;
+  padding: 0.2em 0.2em 0.6em;
+  margin: -0.12em -0.14em -0.45em;
   text-shadow: 
     0 0 30px var(--gold-glow),
     0 10px 40px rgba(0, 0, 0, 0.9);
