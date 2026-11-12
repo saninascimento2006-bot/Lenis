@@ -198,17 +198,28 @@ button {
    04. SITE HEADER & NAVIGATION
    -------------------------------------------------------------------------- */
 .site-header {
+  --header-shrink: 0;
+  --header-pill-width: min(92vw, 1260px);
+  --header-pill-height: max(50px, calc(var(--header-height) - 16px));
+  --header-pill-top: 14px;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: var(--header-height);
+  top: calc(var(--header-pill-top) * var(--header-shrink));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - (100% - var(--header-pill-width)) * var(--header-shrink));
+  height: calc(var(--header-height) - (var(--header-height) - var(--header-pill-height)) * var(--header-shrink));
   z-index: 100;
-  background: rgba(7, 8, 10, 0.82);
+  overflow: hidden;
+  background: rgba(7, 8, 10, calc(0.82 + 0.06 * var(--header-shrink)));
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--marble-border);
+  border-radius: calc(999px * var(--header-shrink));
+  box-shadow:
+    0 calc(18px * var(--header-shrink)) calc(50px * var(--header-shrink)) rgba(0, 0, 0, calc(0.6 * var(--header-shrink))),
+    inset 0 0 0 calc(1px * var(--header-shrink)) rgba(197, 160, 89, calc(0.28 * var(--header-shrink)));
   transition: background var(--transition-fast), border-color var(--transition-fast);
+  will-change: width, height, top, border-radius;
 }
 
 .header-container {
@@ -232,7 +243,7 @@ button {
 }
 
 /* Keep the utilities compact until there is room for their text labels */
-@media (max-width: 1599px) {
+@media (max-width: 1799px) {
   .audio-label, .motion-label {
     display: none;
   }
@@ -250,7 +261,7 @@ button {
   font-size: 1.8rem;
   color: var(--gold-bright);
   filter: drop-shadow(0 0 8px var(--gold-glow));
-  transition: transform var(--transition-fast);
+  transition: transform var(--transition-fast), font-size var(--transition-fast);
 }
 
 .brand-logo:hover .logo-glyph {
@@ -269,6 +280,7 @@ button {
   color: var(--marble-light);
   letter-spacing: 0.18em;
   line-height: 1;
+  transition: font-size var(--transition-fast), letter-spacing var(--transition-fast);
 }
 
 .logo-sub {
@@ -277,6 +289,9 @@ button {
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: var(--gold-aged);
+  max-height: 1.2rem;
+  overflow: hidden;
+  transition: opacity var(--transition-fast), max-height var(--transition-fast);
 }
 
 .desktop-nav {
@@ -284,6 +299,7 @@ button {
   align-items: center;
   gap: 0.4rem;
   flex-wrap: nowrap;
+  transition: gap var(--transition-fast);
 }
 
 .nav-link {
@@ -307,6 +323,7 @@ button {
   align-items: center;
   gap: 0.75rem;
   flex-shrink: 0;
+  transition: gap var(--transition-fast);
 }
 
 .util-btn {
@@ -337,6 +354,54 @@ button {
 
 .util-icon {
   font-size: 0.95rem;
+}
+
+.audio-label,
+.motion-label {
+  display: inline-block;
+  max-width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity var(--transition-fast), max-width var(--transition-fast);
+}
+
+/* Compact header state while the hero scrolls out */
+.site-header.is-shrunk .logo-glyph {
+  font-size: 1.5rem;
+}
+
+.site-header.is-shrunk .logo-title {
+  font-size: 1.15rem;
+  letter-spacing: 0.12em;
+}
+
+.site-header.is-shrunk .logo-sub {
+  max-height: 0;
+  opacity: 0;
+}
+
+.site-header.is-shrunk .desktop-nav {
+  gap: 0.15rem;
+}
+
+.site-header.is-shrunk .nav-link {
+  font-size: 0.78rem;
+  padding: 0.38rem 0.55rem;
+  letter-spacing: 0.02em;
+}
+
+.site-header.is-shrunk .header-actions {
+  gap: 0.45rem;
+}
+
+.site-header.is-shrunk .util-btn {
+  padding: 0.35rem 0.6rem;
+}
+
+.site-header.is-shrunk .audio-label,
+.site-header.is-shrunk .motion-label {
+  max-width: 0;
+  opacity: 0;
 }
 
 /* Mobile Toggle */
@@ -2206,6 +2271,190 @@ button {
 }
 
 /* --------------------------------------------------------------------------
+   14.1 FINAL MYSTERY CTA
+   -------------------------------------------------------------------------- */
+.mystery-cta {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(560px, 82vh, 900px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6rem, 12vh, 10rem) 2rem;
+  overflow: hidden;
+  border-top: 1px solid rgba(197, 160, 89, 0.18);
+  border-bottom: 1px solid rgba(197, 160, 89, 0.08);
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(147, 30, 50, 0.5) 0%, rgba(104, 27, 40, 0.24) 38%, transparent 72%),
+    radial-gradient(circle at 18% 85%, rgba(197, 160, 89, 0.12) 0%, transparent 44%),
+    linear-gradient(180deg, var(--bg-dark-deep) 0%, #1a0b10 32%, #230b12 62%, var(--bg-dark-deep) 100%);
+}
+
+.mystery-cta-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 11.7%, rgba(223, 183, 108, 0.045) 11.7% 11.95%, transparent 11.95% 23.7%),
+    radial-gradient(ellipse at 50% 50%, transparent 22%, rgba(7, 8, 10, 0.78) 82%);
+}
+
+.mystery-cta-bg::before {
+  content: 'Ω';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: min(62vw, 46rem);
+  line-height: 1;
+  color: rgba(197, 160, 89, 0.04);
+  text-shadow: 0 0 80px rgba(197, 160, 89, 0.08);
+}
+
+.mystery-cta-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 980px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.mystery-cta-kicker {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  margin-bottom: 1.3rem;
+}
+
+.mystery-cta-eyebrow {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  color: var(--marble-muted);
+  margin-bottom: 1.1rem;
+}
+
+.mystery-cta-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 5.4vw, 5.4rem);
+  line-height: 1.08;
+  color: var(--marble-light);
+  margin-bottom: 1.6rem;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mystery-cta-title em {
+  display: block;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold-bright);
+  text-shadow: 0 0 34px var(--gold-glow);
+}
+
+.mystery-cta-text {
+  max-width: 710px;
+  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+  line-height: 1.7;
+  color: var(--marble-mid);
+  margin-bottom: 2.4rem;
+}
+
+.mystery-cta-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: 1.05rem 2.8rem;
+  overflow: hidden;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bg-dark-deep);
+  background: var(--marble-light);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 2px;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(223, 183, 108, 0.18);
+  animation: mysteryCtaGlow 3.6s ease-in-out infinite;
+  transition: all var(--transition-fast);
+}
+
+.mystery-cta-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 32%, rgba(255, 255, 255, 0.65) 50%, transparent 68%);
+  transform: translateX(-130%);
+  transition: transform 0.75s ease;
+}
+
+.mystery-cta-btn:hover {
+  color: var(--bg-dark-deep);
+  background: var(--gold-bright);
+  border-color: var(--gold-bright);
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 45px rgba(0, 0, 0, 0.6),
+    0 0 45px rgba(223, 183, 108, 0.5);
+}
+
+.mystery-cta-btn:hover::before {
+  transform: translateX(130%);
+}
+
+.mystery-cta-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+.mystery-cta-btn-glyph {
+  font-size: 1.05rem;
+  color: var(--gold-aged);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.mystery-cta-btn:hover .mystery-cta-btn-glyph {
+  color: var(--bg-dark-deep);
+  transform: rotate(90deg);
+}
+
+.mystery-cta-note {
+  margin-top: 1.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--marble-muted);
+}
+
+@keyframes mysteryCtaGlow {
+  0%, 100% {
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.55),
+      0 0 20px rgba(223, 183, 108, 0.16);
+  }
+  50% {
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.55),
+      0 0 42px rgba(223, 183, 108, 0.38);
+  }
+}
+
+/* --------------------------------------------------------------------------
    15. SITE FOOTER
    -------------------------------------------------------------------------- */
 .site-footer {
@@ -2365,6 +2614,15 @@ button {
     padding: 5rem 1.25rem;
   }
 
+  .mystery-cta {
+    min-height: 70vh;
+    padding: 5rem 1.25rem;
+  }
+
+  .mystery-cta-title {
+    font-size: clamp(2.1rem, 8.5vw, 3.3rem);
+  }
+
   .section-header {
     margin-bottom: 2.8rem;
   }
@@ -2477,6 +2735,20 @@ button {
 
   .story-section {
     padding: 4rem 1rem;
+  }
+
+  .mystery-cta {
+    padding: 4.5rem 1rem;
+  }
+
+  .mystery-cta-text {
+    font-size: 1.05rem;
+  }
+
+  .mystery-cta-btn {
+    width: 100%;
+    max-width: 340px;
+    padding: 1rem 1.5rem;
   }
 
   .hero-section {

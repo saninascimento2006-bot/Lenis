@@ -115,6 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const trackerDots = document.querySelectorAll('.tracker-dot');
   const navLinks = document.querySelectorAll('.nav-link');
   const chapters = document.querySelectorAll('.story-section');
+  const siteHeader = document.getElementById('site-header');
+  const heroSection = document.querySelector('.hero-section');
 
   function updateScrollProgress() {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -127,6 +129,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (trackerFill) {
       trackerFill.style.height = `${progressPercent}%`;
+    }
+
+    // Header contracts progressively while the hero scrolls out
+    if (siteHeader && heroSection) {
+      const shrinkRange = Math.max(heroSection.offsetHeight * 0.85, 320);
+      const shrinkProgress = Math.min(1, Math.max(0, (scrollTop - 10) / shrinkRange));
+
+      siteHeader.style.setProperty('--header-shrink', shrinkProgress.toFixed(4));
+      siteHeader.classList.toggle('is-shrunk', shrinkProgress > 0.4);
     }
 
     // Determine current active chapter
@@ -163,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.addEventListener('scroll', updateScrollProgress, { passive: true });
+  window.addEventListener('resize', updateScrollProgress);
   updateScrollProgress();
 
   // Click on side tracker dots
@@ -508,6 +520,51 @@ document.addEventListener('DOMContentLoaded', () => {
       hostility: '74%',
       quote: '“A terra dá e a terra tira. Nenhum semideus colherá aquilo que não semeou na dor.”',
     },
+    hera: {
+      name: 'Hera',
+      greek: 'ΗΡΑ',
+      domain: 'A Rainha do Olimpo • O Ciúme Eterno',
+      desc: 'Soberana ao lado de Zeus, converte cada traição do marido em uma sentença contra os filhos bastardos. Seus descendentes carregam o peso de um rancor que atravessa gerações e não conhece perdão.',
+      indifference: '93%',
+      hostility: '97%',
+      quote: '“O trono de uma rainha é regado com o sangue dos filhos que não são seus.”',
+    },
+    hefesto: {
+      name: 'Hefesto',
+      greek: 'ΗΦΑΙΣΤΟΣ',
+      domain: 'O Forjador Divino • Mestre das Chamas',
+      desc: 'Banido do Olimpo por sua aparência, molda armas e correntes capazes de aprisionar até os deuses. Seus herdeiros recebem a fúria silenciosa da forja e o desprezo de quem os rejeitou.',
+      indifference: '76%',
+      hostility: '58%',
+      quote: '“Aquilo que os deuses descartam, a forja transforma em sentença.”',
+    },
+    hermes: {
+      name: 'Hermes',
+      greek: 'ΕΡΜΗΣ',
+      domain: 'O Mensageiro Veloz • Senhor dos Limiares',
+      desc: 'Trapaceiro e guia das almas, cruza as fronteiras entre vivos, mortos e divindades. Seus filhos nascem com o dom de desaparecer nas frestas do mundo — e a maldição de nunca pertencer a nenhum deles.',
+      indifference: '80%',
+      hostility: '48%',
+      quote: '“Toda porta tem duas faces. Escolha com cuidado por qual delas vai fugir.”',
+    },
+    dionisio: {
+      name: 'Dionísio',
+      greek: 'ΔΙΟΝΥΣΟΣ',
+      domain: 'O Deus do Êxtase • Loucura e Vinho',
+      desc: 'Senhor das festas e do delírio, dissolve a razão até que homens se tornem feras. Seus descendentes carregam a euforia e a violência de um culto que só conhece a entrega total.',
+      indifference: '74%',
+      hostility: '66%',
+      quote: '“O vinho apaga a fronteira entre o homem e a fera que existe nele.”',
+    },
+    afrodite: {
+      name: 'Afrodite',
+      greek: 'ΑΦΡΟΔΙΤΗ',
+      domain: 'A Deusa do Desejo • Beleza e Ruína',
+      desc: 'Nasceu da espuma e governa corações com a mesma facilidade com que desfaz reinos. Seus herdeiros são amados por todos e, por isso, jamais sabem se o afeto é sincero ou apenas obediência.',
+      indifference: '84%',
+      hostility: '62%',
+      quote: '“O amor dos deuses é uma corrente dourada: quanto mais bela, mais difícil de arrancar.”',
+    },
   };
 
   const deityGreek = document.getElementById('deity-greek');
@@ -660,6 +717,141 @@ document.addEventListener('DOMContentLoaded', () => {
         desc: 'Comunicação direta com espíritos não julgados que vagam pelos ermos da Grécia. Pode comandar névoas ectoplásmicas para desorientar caçadores mortais.',
         power: 'Nigromancia de Sombras & Comunicação Espectral',
         burden: 'Invasão constante de sussurros de agonia na mente durante o sono.',
+      },
+      {
+        epithet: 'Nekron Soter (Νεκρων Σωτηρ)',
+        title: 'O Salvador dos Mortos',
+        desc: 'O semideus pode ancorar almas prestes a se dissolver e erguer barreiras de silêncio que impedem a morte de reclamar um corpo por alguns instantes. Cada alma salva deixa uma marca gélida em sua sombra.',
+        power: 'Ancoragem Espiritual & Escudo Necrótico',
+        burden: 'Frio cadavérico permanente e incapacidade de sentir calor humano.',
+      },
+    ],
+    zeus: [
+      {
+        epithet: 'Olympios (Ὀλύμπιος)',
+        title: 'O Soberano dos Céus',
+        desc: 'O corpo do semideus canaliza a tempestade como uma forja viva. Descargas elétricas rompem muralhas e incendeiam fileiras de inimigos, mas cada raio cobra seu preço no sistema nervoso.',
+        power: 'Raio Cativo & Domínio Tempestuoso',
+        burden: 'Queimaduras nervosas e arritmia após cada descarga.',
+      },
+      {
+        epithet: 'Xenios (Ξένιος)',
+        title: 'O Guardião dos Juramentos',
+        desc: 'Detecta qualquer promessa quebrada nas redondezas e pode tornar pactos fisicamente vinculantes. Traidores jurados sentem o peso do Olimpo cair sobre os ossos até cumprirem a palavra.',
+        power: 'Pacto Vinculante & Retribuição Celestial',
+        burden: 'Cada juramento quebrado ao seu redor abre uma ferida em sua própria pele.',
+      },
+    ],
+    ares: [
+      {
+        epithet: 'Enyalios (Ἐνυάλιος)',
+        title: 'O Furor da Batalha',
+        desc: 'Ao entrar em combate, o semideus ignora dor, cansaço e medo. Seus golpes ganham força desproporcional enquanto o campo ao redor é tomado por um zumbido de violência.',
+        power: 'Frenesi Marcial & Insensibilidade à Dor',
+        burden: 'Cegueira de combate e surtos de violência incontrolável.',
+      },
+      {
+        epithet: 'Andreiphontes (Ἀνδρειφόντης)',
+        title: 'O Ceifador de Homens',
+        desc: 'Enxerga pontos fracos no corpo de qualquer adversário como linhas brilhantes no ar. A precisão é cirúrgica, mas o instinto não distingue mais inimigos de pessoas comuns.',
+        power: 'Instinto Homicida & Aura de Terror',
+        burden: 'Pesadelos com as vítimas e incapacidade de criar vínculos.',
+      },
+    ],
+    demeter: [
+      {
+        epithet: 'Sito (Σιτώ)',
+        title: 'A Senhora das Colheitas',
+        desc: 'Acelera o crescimento de raízes e transforma terra seca em alimento em poucas horas. Onde seus pés tocam, a vegetação floresce — e a fome recua por um instante.',
+        power: 'Fitocinese Nutritiva & Colheita Acelerada',
+        burden: 'Definhamento e fraqueza quando longe de terra fértil.',
+      },
+      {
+        epithet: 'Thesmophoros (Θεσμοφόρος)',
+        title: 'A Legisladora dos Ciclos',
+        desc: 'Governa a passagem das estações no perímetro de sua presença. Pode murchar plantações, acelerar a decomposição de corpos e forçar o inverno a cair sobre um campo inimigo.',
+        power: 'Ciclo das Estações & Murcha Vital',
+        burden: 'Envelhecimento acelerado a cada estação forçada.',
+      },
+    ],
+    hera: [
+      {
+        epithet: 'Teleia (Τελεία)',
+        title: 'A Realizadora dos Votos',
+        desc: 'Sela casamentos, alianças e juramentos com uma corrente invisível. Quem trai o pacto perde o sono, a saúde e, por fim, a própria face diante dos deuses.',
+        power: 'Vínculo Conjugal & Maldição do Ciúme',
+        burden: 'Ciúme obsessivo e febre sempre que testemunha uma traição.',
+      },
+      {
+        epithet: 'Basileia (Βασίλεια)',
+        title: 'A Rainha dos Tronos',
+        desc: 'Exala uma autoridade sobrenatural que transforma ordens em compulsão. Mortais se ajoelham sem saber por quê, e quem resiste sente o peso de uma coroa invisível.',
+        power: 'Autoridade Absoluta & Sentença Celestial',
+        burden: 'Isolamento e incapacidade de perdoar qualquer ofensa.',
+      },
+    ],
+    hefesto: [
+      {
+        epithet: 'Amphigyeeis (Ἀμφιγυήεις)',
+        title: 'O Artesão de Pernas Tortas',
+        desc: 'Forja metal com as mãos nuas e dá vida a autômatos de bronze que obedecem sem hesitar. Suas criações são belas, letais e impossíveis de desfazer.',
+        power: 'Forja Ígnea & Autômatos de Bronze',
+        burden: 'Calor interno e deformações ósseas progressivas.',
+      },
+      {
+        epithet: 'Klutotechnes (Κλυτοτέχνης)',
+        title: 'O Mestre de Todos os Ofícios',
+        desc: 'Compreende qualquer mecanismo ao primeiro toque. Constrói armadilhas, próteses e engenhos de guerra com restos de metal e madeira podre em questão de minutos.',
+        power: 'Engenharia Divina & Armadilhas Mecânicas',
+        burden: 'Obsessão criativa e insônia incurável.',
+      },
+    ],
+    hermes: [
+      {
+        epithet: 'Psychopompos (Ψυχοπομπός)',
+        title: 'O Guia das Almas',
+        desc: 'Enxerga espíritos presos entre os mundos e pode conduzi-los — ou impedir que sigam adiante. Atravessa portas e limiares que deveriam estar fechados para os vivos.',
+        power: 'Travessia Espectral & Passagem entre Mundos',
+        burden: 'Nunca criar raízes e sono invadido por almas perdidas.',
+      },
+      {
+        epithet: 'Dolios (Δόλιος)',
+        title: 'O Mestre dos Ardís',
+        desc: 'Tece ilusões sensoriais, rouba lembranças e altera o que testemunhas juram ter visto. Um sorriso seu pode valer mais que uma espada — ou custar a memória de uma vida inteira.',
+        power: 'Ilusão Sensorial & Roubo de Memória',
+        burden: 'Mentiras involuntárias e perda gradual da própria identidade.',
+      },
+    ],
+    dionisio: [
+      {
+        epithet: 'Lysios (Λύσιος)',
+        title: 'O Libertador dos Grilhões',
+        desc: 'Rompe vínculos mágicos, ordens e contenções físicas com um gesto. Pode induzir êxtase coletivo ou frenesi orgíaco que transforma aliados em uma matilha descontrolada.',
+        power: 'Ruptura de Vínculos & Frenesi Orgíaco',
+        burden: 'Amnésia e perda de controle após cada êxtase.',
+      },
+      {
+        epithet: 'Omadios (Ὠμάδιος)',
+        title: 'O Devorador de Carne Crua',
+        desc: 'Invoca a besta adormecida dentro do próprio corpo. A carne se retorce, os dentes se alongam e a força primal rompe armaduras — mas o retorno custa um pedaço da humanidade.',
+        power: 'Metamorfose Bestial & Força Primal',
+        burden: 'Fome de carne crua e apagamento gradual da humanidade.',
+      },
+    ],
+    afrodite: [
+      {
+        epithet: 'Pandemos (Πάνδημος)',
+        title: 'A Deusa de Todo o Povo',
+        desc: 'Carrega uma aura magnética que inclina desejos antes que a razão possa reagir. Pode acalmar uma multidão furiosa ou transformar aliados em rivais apaixonados.',
+        power: 'Aura de Desejo & Manipulação Emocional',
+        burden: 'Dependência de admiração e ciúme corrosivo.',
+      },
+      {
+        epithet: 'Areia (Ἀρεία)',
+        title: 'A Vingadora do Amor',
+        desc: 'Lança maldições amorosas que transformam afeto em obsessão e saudade em tortura. A vítima não consegue odiar o semideus, mesmo quando deveria.',
+        power: 'Maldição Amorosa & Obsessão Fatal',
+        burden: 'Sente a dor de cada coração que se rompe por sua causa.',
       },
     ],
   };
