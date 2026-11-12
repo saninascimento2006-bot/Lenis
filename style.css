@@ -2082,6 +2082,24 @@ button {
   box-shadow: 0 0 15px rgba(197, 160, 89, 0.25);
 }
 
+.oracle-warning {
+  display: none;
+  margin: -1.2rem 0 1.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: #e0a3a3;
+}
+
+.oracle-step.show-warning .oracle-warning {
+  display: block;
+}
+
+.oracle-step.show-warning .step-question {
+  color: #f0c9c9;
+}
+
 .step-nav-buttons {
   display: flex;
   justify-content: space-between;

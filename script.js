@@ -901,94 +901,582 @@ document.addEventListener('DOMContentLoaded', () => {
   // 08. CHAPTER 7: INTERACTIVE DELPHI ORACLE QUIZ
   // ---------------------------------------------------------------------------
   const oracleForm = document.getElementById('oracle-form');
-  const oracleSteps = document.querySelectorAll('.oracle-step');
+  const oracleStepsContainer = document.getElementById('oracle-steps');
   const oracleResult = document.getElementById('oracle-result');
-  const oracleSubmitBtn = document.getElementById('oracle-submit-btn');
   const oracleResetBtn = document.getElementById('oracle-reset-btn');
 
-  // Step navigation buttons
-  document.querySelectorAll('[data-goto]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const nextStep = btn.getAttribute('data-goto');
-      oracleSteps.forEach((step) => {
-        step.classList.toggle('active', step.getAttribute('data-step') === nextStep);
-      });
-    });
-  });
-
-  const oracleArchetypes = {
-    luz: {
-      title: 'Apolo Phoibos (Φοῖβος)',
-      deity: 'Filho Escolhido do Portador da Luz Ardente',
-      power: 'Combustão Solar, Purificação por Fogo & Cegueira Fotônica',
-      burden: 'Visão reduzida na penumbra & queimação interna contínua',
-      haven: 'As Alturas Nebulosas do Monte Parnaso',
-      flavor: '“Teu brilho é tua maior arma e tua mais cruel traição. Aprende a guardar a faísca nas entranhas da noite antes que o fogo consuma tuas próprias mãos.”',
+  // The thirteen deities of the IKHÔR pantheon. Each one has a complete verdict
+  // and every one of them can be reached by at least one combination of answers.
+  const oracleDeities = {
+    zeus: {
+      title: 'Zeus Olympios (Ὀλύμπιος)',
+      deity: 'Herdeiro Tempestuoso do Soberano dos Céus',
+      power: 'Raio Cativo, Domínio Tempestuoso & Descarga Nervosa',
+      burden: 'Queimaduras nervosas, arritmia e insônia após cada descarga',
+      haven: 'O Pico Tempestuoso do Monte Olimpo',
+      flavor: '“O trovão obedece ao teu pulso, mas cada relâmpago deixa uma cicatriz por dentro. Um rei sem trono aprende que o céu também cobra impostos.”',
     },
-    sombra: {
-      title: 'Ártemis Agrotera (Ἀγροτέρα)',
-      deity: 'Cria das Florestas Indômitas da Caçadora Noturna',
-      power: 'Camuflagem Óptica Absoluta, Mimetismo & Sentidos Ferais',
-      burden: 'Pânico em cidades de pedra & agorafobia sob olhares mortais',
-      haven: 'O Carvalho Monumental do Monte Helicão',
-      flavor: '“As cidades foram erguidas pelos homens para escapar das trevas; para ti, a escuridão dos pinheiros é o único cobertor que preserva tua vida.”',
+    hera: {
+      title: 'Hera Teleia (Τελεία)',
+      deity: 'Filha Juramentada da Realizadora dos Votos',
+      power: 'Vínculo Conjugal, Autoridade Absoluta & Maldição do Ciúme',
+      burden: 'Ciúme obsessivo e febre sempre que testemunha uma traição',
+      haven: 'O Templo dos Votos Quebrados em Argos',
+      flavor: '“Tu guardas promessas como quem guarda facas: pelo cabo e nunca pela lâmina. O amor que exigires será teu, mas nunca será livre.”',
     },
-    furia: {
+    poseidon: {
       title: 'Poseidon Enosichthon (Ἐνοσίχθων)',
       deity: 'Herdeiro Tectônico do Abalador da Terra',
-      power: 'Ressonância Sísmica, Fratura Pétrea & Ondas de Choque',
-      burden: 'Calcificação e rigidez precoce dos ossos nas articulações',
+      power: 'Ressonância Sísmica, Hidrocinese Abissal & Ondas de Choque',
+      burden: 'Calcificação precoce dos ossos e tremores incontroláveis',
       haven: 'As Fendas Vulcânicas da Ilha de Tera',
       flavor: '“A pedra cede ao teu comando, mas o preço da terra que estremeces é a rigidez do teu próprio esqueleto. Nunca permaneças no mesmo vale por duas luas.”',
     },
-    cura: {
-      title: 'Apolo Paian (Παιάν)',
-      deity: 'Descendente Empático do Médico dos Imortais',
-      power: 'Transfusão Celular Vital, Neutralização de Venenos & Selamento',
-      burden: 'Absorção da dor e das enfermidades dos irmãos que salvas',
-      haven: 'A Ravina da Água Morta na Arcádia Selvagem',
-      flavor: '“Em um mundo afundado no ódio e no medo, tua escolha de curar é o ato mais radical de desafio contra os deuses silenciosos.”',
+    hades: {
+      title: 'Hades Nekrodektes (Νεκροδέκτης)',
+      deity: 'Receptor das Sombras Perdidas do Submundo',
+      power: 'Nigromancia de Sombras, Comunicação Espectral & Ancoragem Espiritual',
+      burden: 'Sussurros de agonia durante o sono e frio cadavérico permanente',
+      haven: 'As Cavernas Sem Sol do Tártaro',
+      flavor: '“Os mortos não te temem; os vivos sim. Aprende que reinar sobre o silêncio é a mais solitária das coroas.”',
+    },
+    demeter: {
+      title: 'Deméter Sito (Σιτώ)',
+      deity: 'Descendente Nutritiva da Senhora das Colheitas',
+      power: 'Fitocinese Nutritiva, Colheita Acelerada & Ciclo das Estações',
+      burden: 'Definhamento longe de terra fértil e envelhecimento a cada estação forçada',
+      haven: 'Os Campos Férteis de Elêusis',
+      flavor: '“Onde teus pés tocam, a fome recua. Mas toda colheita exige um inverno, e o teu corpo aprende cedo o preço de semear esperança.”',
+    },
+    atena: {
+      title: 'Atena Promachos (Πρόμαχος)',
+      deity: 'Campeã da Vanguarda da Deusa da Sabedoria',
+      power: 'Percepção Cinética Preditiva, Baluartes Telecinéticos & Engenharia Divina',
+      burden: 'Enxaquecas alucinatórias e incapacidade de desligar o estado de alerta',
+      haven: 'A Acrópole de Mármore Frio de Atenas',
+      flavor: '“Tua mente é uma fortaleza que nenhum cerco derruba — e uma prisão que nenhuma chave abre. A guerra que prevês também te consome.”',
+    },
+    apolo: {
+      title: 'Apolo Phoibos (Φοῖβος)',
+      deity: 'Filho Escolhido do Portador da Luz Ardente',
+      power: 'Combustão Solar, Purificação por Fogo & Cegueira Fotônica',
+      burden: 'Visão reduzida na penumbra e queimação interna contínua',
+      haven: 'As Alturas Nebulosas do Monte Parnaso',
+      flavor: '“Teu brilho é tua maior arma e tua mais cruel traição. Aprende a guardar a faísca nas entranhas da noite antes que o fogo consuma tuas próprias mãos.”',
+    },
+    artemis: {
+      title: 'Ártemis Agrotera (Ἀγροτέρα)',
+      deity: 'Cria das Florestas Indômitas da Caçadora Noturna',
+      power: 'Camuflagem Óptica Absoluta, Mimetismo & Sentidos Ferais',
+      burden: 'Pânico em cidades de pedra e agorafobia sob olhares mortais',
+      haven: 'O Carvalho Monumental do Monte Helicão',
+      flavor: '“As cidades foram erguidas pelos homens para escapar das trevas; para ti, a escuridão dos pinheiros é o único cobertor que preserva tua vida.”',
+    },
+    ares: {
+      title: 'Ares Enyalios (Ἐνυάλιος)',
+      deity: 'Herdeiro do Furor da Batalha',
+      power: 'Frenesi Marcial, Insensibilidade à Dor & Aura de Terror',
+      burden: 'Cegueira de combate e surtos de violência incontrolável',
+      haven: 'As Trincheiras de Ossos da Trácia',
+      flavor: '“A guerra te conhece pelo nome antes mesmo de nasceres. Cada vitória te devolve o fôlego, e cada batalha te rouba um pedaço daquilo que te fazia humano.”',
+    },
+    afrodite: {
+      title: 'Afrodite Pandemos (Πάνδημος)',
+      deity: 'Descendente Magnética da Deusa de Todo o Povo',
+      power: 'Aura de Desejo, Manipulação Emocional & Maldição Amorosa',
+      burden: 'Dependência de admiração e ciúme corrosivo',
+      haven: 'Os Jardins de Mármore de Chipre',
+      flavor: '“Os corações se inclinam para ti como flores ao sol — e tu não sabes mais se és amada ou apenas desejada. O amor que não escolhe também aprisiona.”',
+    },
+    hefesto: {
+      title: 'Hefesto Amphigyeeis (Ἀμφιγυήεις)',
+      deity: 'Artífice de Pernas Tortas, Mestre da Forja',
+      power: 'Forja Ígnea, Autômatos de Bronze & Armadilhas Mecânicas',
+      burden: 'Calor interno e deformações ósseas progressivas',
+      haven: 'As Forjas Subterrâneas de Lemnos',
+      flavor: '“Os deuses riram do teu corpo e esqueceram de olhar tuas mãos. O que criares sobreviverá a eles — e talvez seja essa a tua mais silenciosa vingança.”',
+    },
+    hermes: {
+      title: 'Hermes Dolios (Δόλιος)',
+      deity: 'Andarilho dos Limiares e Mestre dos Ardís',
+      power: 'Ilusão Sensorial, Roubo de Memória & Travessia Espectral',
+      burden: 'Mentiras involuntárias e perda gradual da própria identidade',
+      haven: 'As Encruzilhadas Errantes da Arcádia',
+      flavor: '“Tu atravessas portas que não existem e deixas memórias como rastros. Mas um dia olharás no espelho e não saberás qual das tuas máscaras é a tua face.”',
+    },
+    dionisio: {
+      title: 'Dionísio Omadios (Ὠμάδιος)',
+      deity: 'Herdeiro do Êxtase e da Besta Adormecida',
+      power: 'Metamorfose Bestial, Frenesi Orgíaco & Ruptura de Vínculos',
+      burden: 'Fome de carne crua e apagamento gradual da humanidade',
+      haven: 'Os Vales de Vinho Selvagem da Beócia',
+      flavor: '“A liberdade que ofereces é um abismo disfarçado de festa. Dança, bebe e devora — mas lembra que a besta dentro de ti também aprendeu o teu nome.”',
     },
   };
 
-  if (oracleSubmitBtn) {
-    oracleSubmitBtn.addEventListener('click', () => {
-      const q1 = document.querySelector('input[name="q1"]:checked')?.value || 'luz';
-      const q2 = document.querySelector('input[name="q2"]:checked')?.value || 'sombra';
-      const q3 = document.querySelector('input[name="q3"]:checked')?.value || 'furia';
+  const oracleQuestions = [
+    {
+      id: 'q1',
+      question: 'Quando a patrulha de magistrados cerca sua vila nas primeiras horas da madrugada, qual é seu instinto primordial?',
+      options: [
+        {
+          value: 'a',
+          label: 'Cegar e Purificar',
+          text: 'Queimar a escuridão com uma labareda para que todos fujam, custe o que custar.',
+          scores: { apolo: 3, zeus: 2, hefesto: 1 },
+        },
+        {
+          value: 'b',
+          label: 'Mimetizar e Desaparecer',
+          text: 'Unir-se à névoa das acácias e deslizar em silêncio absoluto.',
+          scores: { artemis: 3, hermes: 2, hades: 1 },
+        },
+        {
+          value: 'c',
+          label: 'Abalar a Estrutura',
+          text: 'Fraturar o piso de pedra para abrir valas e quebrar o cerco pela força bruta.',
+          scores: { poseidon: 3, ares: 2, dionisio: 1 },
+        },
+        {
+          value: 'd',
+          label: 'Proteger os Feridos',
+          text: 'Ficar para trás para estancar as feridas dos idosos e crianças antes de partir.',
+          scores: { demeter: 3, hera: 2, apolo: 1 },
+        },
+      ],
+    },
+    {
+      id: 'q2',
+      question: 'Se um frasco de icor de seus irmãos caídos estivesse em suas mãos, o que farias?',
+      options: [
+        {
+          value: 'a',
+          label: 'Consagrar à Terra',
+          text: 'Devolver o sangue às raízes do bosque para que nada humano o profane.',
+          scores: { demeter: 3, hades: 2, artemis: 1 },
+        },
+        {
+          value: 'b',
+          label: 'Forjar Vingança',
+          text: 'Usar o calor latente para criar armas incendiárias contra os tiranos.',
+          scores: { hefesto: 3, ares: 2, zeus: 1 },
+        },
+        {
+          value: 'c',
+          label: 'Preservar a Memória',
+          text: 'Beber uma gota para ouvir os sussurros do espírito que partiu.',
+          scores: { hades: 3, hermes: 2, apolo: 1 },
+        },
+        {
+          value: 'd',
+          label: 'Ocultar sob Chumbo',
+          text: 'Enterrar nas profundezas de uma caverna inacessível a homens e deuses.',
+          scores: { atena: 3, hera: 2, hermes: 1 },
+        },
+      ],
+    },
+    {
+      id: 'q3',
+      question: 'O que para você representa a maior vitória em um mundo que deseja sua morte?',
+      options: [
+        {
+          value: 'a',
+          label: 'A Liberdade do Silêncio',
+          text: 'Viver despercebido, onde nenhum senhor mortal ou imortal dite meus passos.',
+          scores: { dionisio: 3, artemis: 2, hermes: 1 },
+        },
+        {
+          value: 'b',
+          label: 'A Resistência Feroz',
+          text: 'Fazer com que cada caçador saiba que não caímos sem cobrar um preço amargo.',
+          scores: { ares: 3, poseidon: 2, zeus: 1 },
+        },
+        {
+          value: 'c',
+          label: 'A Preservação da Verdade',
+          text: 'Registrar nossa história para que os séculos futuros conheçam os esquecidos.',
+          scores: { apolo: 3, atena: 2, demeter: 1 },
+        },
+        {
+          value: 'd',
+          label: 'A Irmandade Viva',
+          text: 'Manter meus companheiros respirando e aquecidos por mais um inverno.',
+          scores: { hera: 3, demeter: 2, afrodite: 1 },
+        },
+      ],
+    },
+    {
+      id: 'q4',
+      question: 'Qual refúgio faz seu sangue pulsar mais forte quando o mundo aperta o cerco?',
+      options: [
+        {
+          value: 'a',
+          label: 'O Cume da Tempestade',
+          text: 'Onde o vento corta a pele e o céu parece prestes a desabar sobre os tolos.',
+          scores: { zeus: 3, apolo: 2, poseidon: 1 },
+        },
+        {
+          value: 'b',
+          label: 'A Floresta Sem Nome',
+          text: 'Onde nenhum humano pisa e as árvores antigas guardam os segredos dos caçadores.',
+          scores: { artemis: 3, demeter: 2, dionisio: 1 },
+        },
+        {
+          value: 'c',
+          label: 'As Encruzilhadas Noturnas',
+          text: 'Onde mercadores, ladrões e mensageiros trocam segredos sob lampiões de azeite.',
+          scores: { hermes: 3, afrodite: 2, hera: 1 },
+        },
+        {
+          value: 'd',
+          label: 'As Forjas Sob a Montanha',
+          text: 'Onde o calor do metal abafa o mundo e cada martelada é uma oração.',
+          scores: { hefesto: 3, hades: 2, atena: 1 },
+        },
+      ],
+    },
+    {
+      id: 'q5',
+      question: 'Alguém quebra um juramento sagrado com você. O que desperta em seu sangue?',
+      options: [
+        {
+          value: 'a',
+          label: 'A Maldição do Vínculo',
+          text: 'Selar o traidor com uma corrente invisível até que ele pague com o próprio nome.',
+          scores: { zeus: 3, hera: 2, hades: 1 },
+        },
+        {
+          value: 'b',
+          label: 'A Caçada Implacável',
+          text: 'Seguir o rastro do traidor até o fim do mundo, sem descanso e sem piedade.',
+          scores: { artemis: 3, ares: 2, poseidon: 1 },
+        },
+        {
+          value: 'c',
+          label: 'A Ilusão que Humilha',
+          text: 'Fazer o traidor ver fantasmas, ouvir vozes e perder tudo o que jura ter visto.',
+          scores: { hermes: 3, dionisio: 2, afrodite: 1 },
+        },
+        {
+          value: 'd',
+          label: 'A Justiça que Restaura',
+          text: 'Reunir provas, desmontar a mentira e obrigar a verdade a vir à luz.',
+          scores: { atena: 3, apolo: 2, demeter: 1 },
+        },
+      ],
+    },
+    {
+      id: 'q6',
+      question: 'No instante em que seu poder despertou pela primeira vez, o que você sentiu?',
+      options: [
+        {
+          value: 'a',
+          label: 'Uma Tempestade nos Ossos',
+          text: 'Como se cada nervo fosse um fio de ferro atravessado por um relâmpago.',
+          scores: { zeus: 3, hefesto: 2, poseidon: 1 },
+        },
+        {
+          value: 'b',
+          label: 'Uma Clareza Absoluta',
+          text: 'Como se todas as mentiras do mundo se desfizessem diante dos seus olhos.',
+          scores: { atena: 3, apolo: 2, hermes: 1 },
+        },
+        {
+          value: 'c',
+          label: 'Vozes dos Mortos',
+          text: 'Como se alguém do outro lado da terra sussurrasse o seu nome verdadeiro.',
+          scores: { hades: 3, hermes: 2, demeter: 1 },
+        },
+        {
+          value: 'd',
+          label: 'Um Desejo Magnético',
+          text: 'Como se cada olhar ao redor se curvasse para você sem que ninguém percebesse.',
+          scores: { afrodite: 3, dionisio: 2, hera: 1 },
+        },
+      ],
+    },
+    {
+      id: 'q7',
+      question: 'Qual falha você reconhece em si mesmo?',
+      options: [
+        {
+          value: 'a',
+          label: 'Orgulho e Ciúme',
+          text: 'Uma coroa invisível que não permite esquecer nenhuma ofensa, nem perdoar nenhuma traição.',
+          scores: { hera: 3, zeus: 2, afrodite: 1 },
+        },
+        {
+          value: 'b',
+          label: 'Fúria Cega',
+          text: 'Uma tempestade que não distingue inimigos de inocentes quando o sangue ferve.',
+          scores: { ares: 3, poseidon: 2, dionisio: 1 },
+        },
+        {
+          value: 'c',
+          label: 'Rancor que Afunda',
+          text: 'Uma maré silenciosa que guarda cada ferida e espera o momento de arrastar tudo para o fundo.',
+          scores: { poseidon: 3, hades: 2, atena: 1 },
+        },
+        {
+          value: 'd',
+          label: 'Fome de Êxtase',
+          text: 'Uma fome que transforma festa em ritual, desejo em obsessão e liberdade em queda.',
+          scores: { dionisio: 3, afrodite: 2, demeter: 1 },
+        },
+      ],
+    },
+    {
+      id: 'q8',
+      question: 'Qual oferenda você deixaria no altar de um deus esquecido?',
+      options: [
+        {
+          value: 'a',
+          label: 'Ramos de Oliveira, Mel e Trigo',
+          text: 'A promessa de alimento, abrigo e uma lei que proteja os que ficaram.',
+          scores: { demeter: 3, atena: 2, hera: 1 },
+        },
+        {
+          value: 'b',
+          label: 'Vinho, Carne Crua e Sangue Quente',
+          text: 'A entrega daquilo que te faz humano em troca de uma noite de êxtase absoluto.',
+          scores: { dionisio: 3, ares: 2, afrodite: 1 },
+        },
+        {
+          value: 'c',
+          label: 'Moedas de Ouro, Ossos e Pedras Preciosas',
+          text: 'O tributo silencioso daqueles que sabem que a morte também cobra pedágio.',
+          scores: { hades: 3, poseidon: 2, hefesto: 1 },
+        },
+        {
+          value: 'd',
+          label: 'Incenso, Penas e Mensagens Seladas',
+          text: 'Um pedido para que nenhuma porta do mundo permaneça fechada para você.',
+          scores: { hermes: 3, apolo: 2, artemis: 1 },
+        },
+      ],
+    },
+    {
+      id: 'q9',
+      question: 'Qual som acalma o seu sangue quando tudo ao redor desmorona?',
+      options: [
+        {
+          value: 'a',
+          label: 'Um Hino de Cura e Luz',
+          text: 'Uma melodia que purifica feridas e afasta a escuridão por alguns instantes.',
+          scores: { apolo: 3, demeter: 2, atena: 1 },
+        },
+        {
+          value: 'b',
+          label: 'Um Canto de Maré e Tempestade',
+          text: 'O rugido do mar contra a pedra e o trovão que responde lá no alto.',
+          scores: { poseidon: 3, zeus: 2, artemis: 1 },
+        },
+        {
+          value: 'c',
+          label: 'Um Perfume e um Espelho',
+          text: 'O eco de uma promessa bela o suficiente para fazer o mundo esquecer a guerra.',
+          scores: { afrodite: 3, hera: 2, dionisio: 1 },
+        },
+        {
+          value: 'd',
+          label: 'O Martelo Batendo na Bigorna',
+          text: 'O ritmo de metal contra metal, a única oração que nunca te abandonou.',
+          scores: { hefesto: 3, ares: 2, hades: 1 },
+        },
+      ],
+    },
+    {
+      id: 'q10',
+      question: 'Quando o mundo desaba, a quem você entrega sua lealdade?',
+      options: [
+        {
+          value: 'a',
+          label: 'Àqueles que me Deram um Lar',
+          text: 'Laços que sobrevivem ao medo, à fome e à fúria dos deuses.',
+          scores: { hera: 3, demeter: 2, hefesto: 1 },
+        },
+        {
+          value: 'b',
+          label: 'Àqueles que Lutam ao Meu Lado',
+          text: 'Irmãos de armas que não precisam de juramento para serem leais.',
+          scores: { ares: 3, zeus: 2, artemis: 1 },
+        },
+        {
+          value: 'c',
+          label: 'Àqueles que o Mar Esqueceu',
+          text: 'Os que afundaram sem nome, sem templo e sem uma única prece.',
+          scores: { poseidon: 3, hades: 2, hermes: 1 },
+        },
+        {
+          value: 'd',
+          label: 'Ao Amor que Eu Escolho',
+          text: 'Um vínculo que nenhum decreto divino e nenhuma lei mortal pode quebrar.',
+          scores: { afrodite: 3, dionisio: 2, hera: 1 },
+        },
+      ],
+    },
+  ];
 
-      // Score counter
-      const scores = { luz: 0, sombra: 0, furia: 0, cura: 0 };
-      scores[q1] = (scores[q1] || 0) + 1;
-      scores[q2] = (scores[q2] || 0) + 1;
-      scores[q3] = (scores[q3] || 0) + 1;
+  function renderOracleSteps() {
+    if (!oracleStepsContainer) return;
 
-      // Find highest score archetype
-      let topCategory = 'luz';
-      let highest = -1;
-      for (const [key, val] of Object.entries(scores)) {
-        if (val > highest) {
-          highest = val;
-          topCategory = key;
-        }
+    oracleStepsContainer.innerHTML = oracleQuestions
+      .map((question, index) => {
+        const stepNumber = index + 1;
+        const isLastStep = index === oracleQuestions.length - 1;
+
+        return `
+      <div class="oracle-step ${index === 0 ? 'active' : ''}" data-step="${stepNumber}" role="group" aria-labelledby="oracle-q-${stepNumber}">
+        <span class="step-num">Questão ${stepNumber} de ${oracleQuestions.length}</span>
+        <h4 class="step-question" id="oracle-q-${stepNumber}">${question.question}</h4>
+        <div class="oracle-options">
+          ${question.options
+            .map(
+              (option) => `
+            <label class="oracle-opt">
+              <input type="radio" name="${question.id}" value="${option.value}" />
+              <span class="opt-box">
+                <strong>${option.label}:</strong> ${option.text}
+              </span>
+            </label>
+          `
+            )
+            .join('')}
+        </div>
+        <span class="oracle-warning" role="alert">O oráculo não responde a perguntas silenciadas. Escolha uma opção antes de prosseguir.</span>
+        <div class="step-nav-buttons">
+          ${
+            index > 0
+              ? `<button type="button" class="oracle-back-btn" data-goto="${index}">&larr; Voltar</button>`
+              : ''
+          }
+          ${
+            isLastStep
+              ? '<button type="button" class="oracle-submit-btn" id="oracle-submit-btn">Despertar o Epíteto ✨</button>'
+              : `<button type="button" class="oracle-next-btn" data-goto="${stepNumber + 1}">Prosseguir &rarr;</button>`
+          }
+        </div>
+      </div>
+    `;
+      })
+      .join('');
+  }
+
+  function showOracleStep(stepNumber, warningStepNumber = null) {
+    if (!oracleStepsContainer) return;
+
+    oracleStepsContainer.querySelectorAll('.oracle-step').forEach((step) => {
+      const isActive = Number(step.getAttribute('data-step')) === stepNumber;
+      step.classList.toggle('active', isActive);
+      step.classList.toggle(
+        'show-warning',
+        isActive && warningStepNumber !== null && Number(step.getAttribute('data-step')) === warningStepNumber
+      );
+    });
+  }
+
+  function calculateOracleVerdict(answers) {
+    const deityKeys = Object.keys(oracleDeities);
+    const totals = {};
+    const primaryHits = {};
+    const strongestHit = {};
+
+    deityKeys.forEach((key) => {
+      totals[key] = 0;
+      primaryHits[key] = 0;
+      strongestHit[key] = 0;
+    });
+
+    answers.forEach((answer) => {
+      Object.entries(answer.scores).forEach(([key, points]) => {
+        totals[key] += points;
+        if (points === 3) primaryHits[key] += 1;
+        if (points > strongestHit[key]) strongestHit[key] = points;
+      });
+    });
+
+    // Deterministic tie-break: total points, then how many times the deity was
+    // the primary resonance of an answer, then the strongest single resonance.
+    const ranking = deityKeys.slice().sort((a, b) => {
+      if (totals[b] !== totals[a]) return totals[b] - totals[a];
+      if (primaryHits[b] !== primaryHits[a]) return primaryHits[b] - primaryHits[a];
+      if (strongestHit[b] !== strongestHit[a]) return strongestHit[b] - strongestHit[a];
+      return deityKeys.indexOf(a) - deityKeys.indexOf(b);
+    });
+
+    const topKey = ranking[0];
+    const personalMax = oracleQuestions.reduce((sum, question) => {
+      return sum + Math.max(...question.options.map((option) => option.scores[topKey] || 0));
+    }, 0);
+    const affinity = Math.round((totals[topKey] / personalMax) * 100);
+
+    return {
+      key: topKey,
+      deity: oracleDeities[topKey],
+      affinity,
+    };
+  }
+
+  function handleOracleSubmit() {
+    const answers = [];
+
+    for (let index = 0; index < oracleQuestions.length; index += 1) {
+      const question = oracleQuestions[index];
+      const selected = oracleStepsContainer.querySelector(`input[name="${question.id}"]:checked`);
+
+      if (!selected) {
+        showOracleStep(index + 1, index + 1);
+        return;
       }
 
-      const archetype = oracleArchetypes[topCategory] || oracleArchetypes.luz;
+      const answer = question.options.find((option) => option.value === selected.value);
+      if (answer) answers.push(answer);
+    }
 
-      // Populate results
-      document.getElementById('result-epithet-title').textContent = archetype.title;
-      document.getElementById('result-deity-subtitle').textContent = archetype.deity;
-      document.getElementById('result-power').textContent = archetype.power;
-      document.getElementById('result-burden').textContent = archetype.burden;
-      document.getElementById('result-haven').textContent = archetype.haven;
-      document.getElementById('result-flavor').textContent = archetype.flavor;
+    const verdict = calculateOracleVerdict(answers);
 
-      // Swap views
-      oracleForm.style.display = 'none';
-      oracleResult.style.display = 'block';
+    document.getElementById('result-epithet-title').textContent = verdict.deity.title;
+    document.getElementById('result-deity-subtitle').textContent = verdict.deity.deity;
+    document.getElementById('result-power').textContent = verdict.deity.power;
+    document.getElementById('result-burden').textContent = verdict.deity.burden;
+    document.getElementById('result-affinity').textContent = `${verdict.affinity}%`;
+    document.getElementById('result-haven').textContent = verdict.deity.haven;
+    document.getElementById('result-flavor').textContent = verdict.deity.flavor;
 
-      // Scroll smoothly to results
-      scrollToTarget('#oracle-result');
+    oracleForm.style.display = 'none';
+    oracleResult.style.display = 'block';
+    scrollToTarget('#oracle-result');
+  }
+
+  if (oracleStepsContainer) {
+    renderOracleSteps();
+
+    oracleStepsContainer.addEventListener('click', (event) => {
+      const navigationButton = event.target.closest('[data-goto]');
+
+      if (navigationButton) {
+        const currentStep = navigationButton.closest('.oracle-step');
+        const currentStepNumber = Number(currentStep.getAttribute('data-step'));
+        const targetStepNumber = Number(navigationButton.getAttribute('data-goto'));
+
+        if (targetStepNumber > currentStepNumber && !currentStep.querySelector('input[type="radio"]:checked')) {
+          showOracleStep(currentStepNumber, currentStepNumber);
+          return;
+        }
+
+        showOracleStep(targetStepNumber);
+        return;
+      }
+
+      if (event.target.closest('#oracle-submit-btn')) {
+        handleOracleSubmit();
+      }
+    });
+
+    oracleStepsContainer.addEventListener('change', (event) => {
+      if (event.target.matches('input[type="radio"]')) {
+        event.target.closest('.oracle-step')?.classList.remove('show-warning');
+      }
     });
   }
 
@@ -997,8 +1485,7 @@ document.addEventListener('DOMContentLoaded', () => {
       oracleForm.reset();
       oracleResult.style.display = 'none';
       oracleForm.style.display = 'flex';
-      oracleSteps.forEach((s) => s.classList.remove('active'));
-      oracleSteps[0].classList.add('active');
+      showOracleStep(1);
       scrollToTarget('#oracle-experience');
     });
   }

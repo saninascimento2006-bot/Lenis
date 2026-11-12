@@ -760,115 +760,12 @@
             <div class="oracle-header">
               <span class="oracle-tag">ORÁCULO DE DELFOS CLANDESTINO</span>
               <h3>Qual Epíteto Dorme no Seu Sangue?</h3>
-              <p>Responda às três indagações da noite arcaica e descubra a manifestação que herdarias no universo de IKHÔR:</p>
+              <p>Responda às dez indagações da noite arcaica e descubra qual dos treze deuses reivindica o teu sangue no universo de IKHÔR:</p>
             </div>
 
             <!-- Quiz Questions Form -->
             <form id="oracle-form" class="oracle-form" onsubmit="return false;">
-              <!-- Question 1 -->
-              <div class="oracle-step active" data-step="1">
-                <span class="step-num">Questão 1 de 3</span>
-                <h4 class="step-question">Quando a patrulha de magistrados cerca sua vila nas primeiras horas da madrugada, qual é seu instinto primordial?</h4>
-                <div class="oracle-options">
-                  <label class="oracle-opt">
-                    <input type="radio" name="q1" value="luz" required />
-                    <span class="opt-box">
-                      <strong>Cegar e Purificar:</strong> Queimar a escuridão com uma labareda para que todos fujam, custe o que custar.
-                    </span>
-                  </label>
-                  <label class="oracle-opt">
-                    <input type="radio" name="q1" value="sombra" />
-                    <span class="opt-box">
-                      <strong>Mimetizar e Desaparecer:</strong> Unir-se à névoa das acácias e deslizar em silêncio absoluto.
-                    </span>
-                  </label>
-                  <label class="oracle-opt">
-                    <input type="radio" name="q1" value="furia" />
-                    <span class="opt-box">
-                      <strong>Abalar a Estrutura:</strong> Fraturar o piso de pedra para abrir valas e quebrar o cerco pela força bruta.
-                    </span>
-                  </label>
-                  <label class="oracle-opt">
-                    <input type="radio" name="q1" value="cura" />
-                    <span class="opt-box">
-                      <strong>Proteger os Feridos:</strong> Ficar para trás para estancar as feridas dos idosos e crianças antes de partir.
-                    </span>
-                  </label>
-                </div>
-                <button type="button" class="oracle-next-btn" data-goto="2">Prosseguir &rarr;</button>
-              </div>
-
-              <!-- Question 2 -->
-              <div class="oracle-step" data-step="2">
-                <span class="step-num">Questão 2 de 3</span>
-                <h4 class="step-question">Se um frasco de icor de seus irmãos caídos estivesse em suas mãos, o que farias?</h4>
-                <div class="oracle-options">
-                  <label class="oracle-opt">
-                    <input type="radio" name="q2" value="cura" required />
-                    <span class="opt-box">
-                      <strong>Consagrar à Terra:</strong> Devolver o sangue às raízes do bosque para que nada humano o profane.
-                    </span>
-                  </label>
-                  <label class="oracle-opt">
-                    <input type="radio" name="q2" value="furia" />
-                    <span class="opt-box">
-                      <strong>Forjar Vingança:</strong> Usar o calor latente para criar armas incendiárias contra os tiranos.
-                    </span>
-                  </label>
-                  <label class="oracle-opt">
-                    <input type="radio" name="q2" value="luz" />
-                    <span class="opt-box">
-                      <strong>Preservar a Memória:</strong> Beber uma gota para ouvir os sussurros do espírito que partiu.
-                    </span>
-                  </label>
-                  <label class="oracle-opt">
-                    <input type="radio" name="q2" value="sombra" />
-                    <span class="opt-box">
-                      <strong>Ocultar sob Chumbo:</strong> Enterrar nas profundezas de uma caverna inacessível a homens e deuses.
-                    </span>
-                  </label>
-                </div>
-                <div class="step-nav-buttons">
-                  <button type="button" class="oracle-back-btn" data-goto="1">&larr; Voltar</button>
-                  <button type="button" class="oracle-next-btn" data-goto="3">Prosseguir &rarr;</button>
-                </div>
-              </div>
-
-              <!-- Question 3 -->
-              <div class="oracle-step" data-step="3">
-                <span class="step-num">Questão 3 de 3</span>
-                <h4 class="step-question">O que para você representa a maior vitória em um mundo que deseja sua morte?</h4>
-                <div class="oracle-options">
-                  <label class="oracle-opt">
-                    <input type="radio" name="q3" value="sombra" required />
-                    <span class="opt-box">
-                      <strong>A Liberdade do Silêncio:</strong> Viver despercebido, onde nenhum senhor mortal ou imortal dite meus passos.
-                    </span>
-                  </label>
-                  <label class="oracle-opt">
-                    <input type="radio" name="q3" value="furia" />
-                    <span class="opt-box">
-                      <strong>A Resistência Feroz:</strong> Fazer com que cada caçador saiba que não caímos sem cobrar um preço amargo.
-                    </span>
-                  </label>
-                  <label class="oracle-opt">
-                    <input type="radio" name="q3" value="luz" />
-                    <span class="opt-box">
-                      <strong>A Preservação da Verdade:</strong> Registrar nossa história para que os séculos futuros conheçam os esquecidos.
-                    </span>
-                  </label>
-                  <label class="oracle-opt">
-                    <input type="radio" name="q3" value="cura" />
-                    <span class="opt-box">
-                      <strong>A Irmandade Viva:</strong> Manter meus companheiros respirando e aquecidos por mais um inverno.
-                    </span>
-                  </label>
-                </div>
-                <div class="step-nav-buttons">
-                  <button type="button" class="oracle-back-btn" data-goto="2">&larr; Voltar</button>
-                  <button type="button" class="oracle-submit-btn" id="oracle-submit-btn">Despertar o Epíteto ✨</button>
-                </div>
-              </div>
+              <div id="oracle-steps"></div>
             </form>
 
             <!-- Oracle Result Card (Hidden by default) -->
@@ -890,6 +787,10 @@
                   <div class="result-stat-row">
                     <span class="stat-name">O Fardo que Carregas:</span>
                     <span class="stat-val" id="result-burden">Visão reduzida na penumbra &amp; febres noturnas</span>
+                  </div>
+                  <div class="result-stat-row">
+                    <span class="stat-name">Afinidade Sanguínea:</span>
+                    <span class="stat-val" id="result-affinity">—</span>
                   </div>
                   <div class="result-stat-row">
                     <span class="stat-name">Refúgio Recomendado:</span>
