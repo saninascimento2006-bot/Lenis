@@ -2594,6 +2594,17 @@ button {
     justify-content: center;
   }
 
+  /* On smaller screens the hero content can grow taller than the viewport.
+     Keep the scroll cue in the normal flow so it never overlaps the CTAs. */
+  .scroll-cue {
+    position: static;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    align-self: center;
+    margin-top: 1.25rem;
+  }
+
   .hero-model-bg {
     width: 100%;
     opacity: 0.5;
@@ -2791,6 +2802,12 @@ button {
   .hero-lead {
     font-size: 1.05rem;
     line-height: 1.6;
+  }
+
+  .cue-text {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-align: center;
   }
 
   .hero-model-bg {
