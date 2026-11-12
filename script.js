@@ -1635,48 +1635,404 @@ document.addEventListener('DOMContentLoaded', () => {
   // 10. GSAP SCROLL ENHANCEMENTS (Fallback safe)
   // ---------------------------------------------------------------------------
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !prefersReducedMotion) {
-    // Parallax on section headers
-    gsap.utils.toArray('.section-header').forEach((header) => {
-      gsap.from(header, {
+    const clearRevealProps = (targets) => {
+      gsap.set(targets, { clearProps: 'transform,opacity,filter,clipPath' });
+    };
+
+    // 10.1 — Chapter headers: each one enters from a different direction.
+    gsap.utils.toArray('.section-header').forEach((header, index) => {
+      const kicker = header.querySelector('.greek-kicker');
+      const title = header.querySelector('.section-title');
+      const subtitle = header.querySelector('.section-subtitle');
+      const directions = [
+        { x: 0, y: 52, rotate: 0 },
+        { x: -58, y: 10, rotate: -0.6 },
+        { x: 58, y: 10, rotate: 0.6 },
+        { x: 0, y: 34, scale: 0.96 },
+      ];
+      const direction = directions[index % directions.length];
+
+      const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: header,
-          start: 'top 85%',
+          start: 'top 84%',
           toggleActions: 'play none none reverse',
         },
-        opacity: 0,
-        y: 40,
-        duration: 1,
-        ease: 'power2.out',
       });
+
+      if (kicker) {
+        timeline.fromTo(
+          kicker,
+          {
+            opacity: 0,
+            y: 14,
+            letterSpacing: '0.52em',
+          },
+          {
+            opacity: 1,
+            y: 0,
+            letterSpacing: '0.3em',
+            duration: 0.8,
+            ease: 'power2.out',
+          }
+        );
+      }
+
+      if (title) {
+        timeline.fromTo(
+          title,
+          {
+            opacity: 0,
+            ...direction,
+          },
+          {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            rotate: 0,
+            scale: 1,
+            duration: 1,
+            ease: 'power3.out',
+          },
+          kicker ? '-=0.38' : 0
+        );
+      }
+
+      if (subtitle) {
+        timeline.fromTo(
+          subtitle,
+          {
+            opacity: 0,
+            y: 18,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+          },
+          title ? '-=0.55' : 0
+        );
+      }
     });
 
-    // Stagger in triptych cards
-    gsap.utils.toArray('.threat-card, .dossier-card, .info-card').forEach((card, idx) => {
-      gsap.from(card, {
-        scrollTrigger: {
-          trigger: card,
-          start: 'top 88%',
-          toggleActions: 'play none none reverse',
-        },
+    // 10.2 — Narrative banner slides in from the left.
+    gsap.fromTo(
+      '.narrative-banner',
+      {
         opacity: 0,
-        y: 35,
-        duration: 0.8,
-        delay: (idx % 3) * 0.15,
-        ease: 'power2.out',
-      });
-    });
-
-    // Fade in Manifesto Box
-    gsap.from('.manifesto-box', {
-      scrollTrigger: {
-        trigger: '.manifesto-box',
-        start: 'top 80%',
+        x: -55,
       },
-      scale: 0.95,
-      opacity: 0,
-      duration: 1.2,
-      ease: 'power2.out',
-    });
+      {
+        opacity: 1,
+        x: 0,
+        scrollTrigger: {
+          trigger: '.narrative-banner',
+          start: 'top 88%',
+          once: true,
+        },
+        duration: 0.9,
+        ease: 'power3.out',
+        onComplete: () => clearRevealProps('.narrative-banner'),
+      }
+    );
+
+    // 10.3 — Deity showcase: fade in and out only.
+    gsap.fromTo(
+      '.deity-card-frame',
+      { opacity: 0 },
+      {
+        opacity: 1,
+        scrollTrigger: {
+          trigger: '.deity-showcase',
+          start: 'top 82%',
+          toggleActions: 'play none none reverse',
+        },
+        duration: 0.8,
+        ease: 'power2.out',
+      }
+    );
+
+    gsap.fromTo(
+      '.mini-deity-card',
+      { opacity: 0 },
+      {
+        opacity: 1,
+        scrollTrigger: {
+          trigger: '.pantheon-cards-grid',
+          start: 'top 86%',
+          toggleActions: 'play none none reverse',
+        },
+        duration: 0.6,
+        stagger: 0.05,
+        ease: 'power2.out',
+      }
+    );
+
+    // 10.4 — Info cards: fade in and out only.
+    gsap.fromTo(
+      '.info-card',
+      { opacity: 0 },
+      {
+        opacity: 1,
+        scrollTrigger: {
+          trigger: '.epithet-infographic',
+          start: 'top 86%',
+          toggleActions: 'play none none reverse',
+        },
+        duration: 0.8,
+        stagger: 0.12,
+        ease: 'power2.out',
+      }
+    );
+
+    // 10.5 — The epithet matrix unfolds as one piece.
+    gsap.fromTo(
+      '.epithet-matrix-wrapper',
+      {
+        opacity: 0,
+        y: 48,
+        scale: 0.97,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        scrollTrigger: {
+          trigger: '.epithet-matrix-wrapper',
+          start: 'top 85%',
+          once: true,
+        },
+        duration: 1,
+        ease: 'power3.out',
+        onComplete: () => clearRevealProps('.epithet-matrix-wrapper'),
+      }
+    );
+
+    // 10.6 — Dossier cards: fade in and out only.
+    gsap.fromTo(
+      '.dossier-card',
+      { opacity: 0 },
+      {
+        opacity: 1,
+        scrollTrigger: {
+          trigger: '.dossier-grid',
+          start: 'top 86%',
+          toggleActions: 'play none none reverse',
+        },
+        duration: 0.9,
+        stagger: 0.14,
+        ease: 'power2.out',
+      }
+    );
+
+    // 10.7 — The inquisitorial parchment unfolds from the top.
+    gsap.fromTo(
+      '.parchment-frame',
+      {
+        opacity: 0,
+        scaleY: 0.9,
+        y: 20,
+      },
+      {
+        opacity: 1,
+        scaleY: 1,
+        y: 0,
+        transformOrigin: 'top center',
+        scrollTrigger: {
+          trigger: '.parchment-frame',
+          start: 'top 86%',
+          once: true,
+        },
+        duration: 1,
+        ease: 'power3.out',
+        onComplete: () => clearRevealProps('.parchment-frame'),
+      }
+    );
+
+    // 10.8 — Havens slide in one after another.
+    gsap.fromTo(
+      '.haven-card',
+      {
+        opacity: 0,
+        x: 45,
+        scale: 0.97,
+      },
+      {
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        scrollTrigger: {
+          trigger: '.haven-explorer',
+          start: 'top 86%',
+          once: true,
+        },
+        duration: 0.8,
+        stagger: 0.12,
+        ease: 'power3.out',
+        onComplete: () => clearRevealProps('.haven-card'),
+      }
+    );
+
+    // 10.9 — Threat cards: fade in and out only.
+    gsap.fromTo(
+      '.threat-card',
+      { opacity: 0 },
+      {
+        opacity: 1,
+        scrollTrigger: {
+          trigger: '.threats-triptych',
+          start: 'top 86%',
+          toggleActions: 'play none none reverse',
+        },
+        duration: 0.9,
+        stagger: 0.14,
+        ease: 'power2.out',
+      }
+    );
+
+    // 10.10 — Manifesto: box, seal and closing quote reveal in layers.
+    const manifestoBox = document.querySelector('.manifesto-box');
+    if (manifestoBox) {
+      const manifestoSeal = manifestoBox.querySelector('.manifesto-seal');
+      const manifestoQuote = manifestoBox.querySelector('.manifesto-climax-quote');
+      const manifestoTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: manifestoBox,
+          start: 'top 80%',
+          once: true,
+        },
+        onComplete: () => clearRevealProps(manifestoBox),
+      });
+
+      manifestoTimeline.fromTo(
+        manifestoBox,
+        {
+          opacity: 0,
+          scale: 0.95,
+          y: 30,
+        },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 1,
+          ease: 'power3.out',
+        }
+      );
+
+      if (manifestoSeal) {
+        manifestoTimeline.fromTo(
+          manifestoSeal,
+          {
+            opacity: 0,
+            rotation: -22,
+            scale: 0.82,
+          },
+          {
+            opacity: 1,
+            rotation: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: 'back.out(1.6)',
+          },
+          '-=0.55'
+        );
+      }
+
+      if (manifestoQuote) {
+        manifestoTimeline.fromTo(
+          manifestoQuote,
+          {
+            opacity: 0,
+            y: 18,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+          },
+          '-=0.35'
+        );
+      }
+    }
+
+    // 10.11 — Oracle and specs arrive softly.
+    gsap.fromTo(
+      '.oracle-frame',
+      {
+        opacity: 0,
+        y: 38,
+        scale: 0.985,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        scrollTrigger: {
+          trigger: '.oracle-experience',
+          start: 'top 86%',
+          once: true,
+        },
+        duration: 1,
+        ease: 'power3.out',
+        onComplete: () => clearRevealProps('.oracle-frame'),
+      }
+    );
+
+    gsap.fromTo(
+      '.project-specs-card',
+      {
+        opacity: 0,
+        y: 30,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scrollTrigger: {
+          trigger: '.project-specs-card',
+          start: 'top 88%',
+          once: true,
+        },
+        duration: 0.9,
+        ease: 'power3.out',
+        onComplete: () => clearRevealProps('.project-specs-card'),
+      }
+    );
+
+    // 10.12 — Final CTA reveals in staggered layers.
+    gsap.fromTo(
+      '.mystery-cta-content > *',
+      {
+        opacity: 0,
+        y: 28,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scrollTrigger: {
+          trigger: '.mystery-cta',
+          start: 'top 78%',
+          once: true,
+        },
+        duration: 0.8,
+        stagger: 0.12,
+        ease: 'power3.out',
+        onComplete: () =>
+          gsap.set('.mystery-cta-content > *', {
+            clearProps: 'transform,opacity',
+          }),
+      }
+    );
+
+    // Recalculate trigger positions once fonts, images and dynamic content settle.
+    const refreshScrollTriggers = () => ScrollTrigger.refresh();
+    window.addEventListener('load', refreshScrollTriggers, { once: true });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(refreshScrollTriggers);
+    }
+    ScrollTrigger.refresh();
   }
 
   // ---------------------------------------------------------------------------
